@@ -45,11 +45,12 @@ Motion::Project::App.setup do |app|
   # app.fonts = ['Oswald-Regular.ttf', 'FontAwesome.otf'] # These go in /resources
   app.frameworks += %w[CoreLocation MapKit]
   #
-  # app.vendor_project('vendor/Flurry', :static)
   # app.vendor_project('vendor/DSLCalendarView', :static, :cflags => '-fobjc-arc') # Using arc
   #
   app.pods do
     pod 'SWTableViewCell', '~> 0.3.7'
+    pod 'DBMapSelectorViewController', '~> 1.2.0'
+    pod 'FLKAutoLayout', '~> 0.2.1'
   end
  
   # app.development do
