@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'ib'
 gem 'rake'
 gem 'ruby_motion_query'
 gem 'motion_model'

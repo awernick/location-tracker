@@ -1,19 +1,24 @@
 # Falling into the MassiveViewController anti-pattern :(
 class SelectLocationViewController < UIViewController
   attr_accessor :map_view, :locations, :geocoder, :top_container, :bottom_container
-
+  attr_accessor :map_view_controller
   def loadView
     super
 
-    view_height = view.frame.size.height
+    view_origin = navigationController.toolbar.frame.size.height
+    view_height = view.frame.size.height - view_origin
+    p view.frame.size.height
+    p view_height
     view_width  = view.frame.size.width
 
-    self.top_container    = UIView.alloc.initWithFrame [[         0,                0 ],
+    self.top_container    = UIView.alloc.initWithFrame [[         0,      view_origin ],
                                                         [ view_width, view_height / 2 ]]
 
-    self.bottom_container = UIView.alloc.initWithFrame [[         0,  view_height / 2 ],
+    self.bottom_container = UIView.alloc.initWithFrame [[ 0, view_height / 2 + view_origin],
                                                         [ view_width, view_height / 2 ]]
-
+    p top_container.frame  
+    p bottom_container.frame
+    p view.frame                                                    
     # top_container.alignTopEdgeWithView       view, predicate:nil                       
     # bottom_container.alignBottomEdgeWithView view, predicate: nil
 
@@ -31,31 +36,52 @@ class SelectLocationViewController < UIViewController
   end
 
   def init_table
-    table_view = UITableView.alloc.initWithFrame(CGRectMake(0, 0, view.frame.size.width,
-                                                                  view.frame.size.height))
+    table_view_controller = SearchableLocationTableViewController.alloc
+      .initWithNibName('SearchableLocationTableViewController', bundle: nil)
 
-    table_view.dataSource = locations
-    table_view.delegate   = self
+    table_view_controller.delegate = self
+
+    p table_view_controller.view
+
+    table_view_controller.view.frame = [[0, 0], [top_container.frame.size.width,
+                                                 top_container.frame.size.height]]
+
+
+    # table_view = UITableView.alloc.initWithFrame(CGRectMake(0, 0, view.frame.size.width,
+    #                                                               view.frame.size.height))
+
+    # table_view.dataSource = locations
+    # table_view.delegate   = self
     
     self.locations = []
 
-    top_container.addSubview table_view
+    top_container.addSubview table_view_controller.view
+    addChildViewController(table_view_controller)
+    table_view_controller.didMoveToParentViewController self
   end
 
   def init_map
-    map_view_controller = SelectableRadiusMapViewController.new
+    self.map_view_controller = SelectableRadiusMapViewController.new
 
-    map_view_controller.view.frame = [[0, 0,], [bottom_container.frame.size.width,
-                                                bottom_container.frame.size.height]]
+    map_view_controller.view.frame = [[0, 0], [bottom_container.frame.size.width,
+                                               bottom_container.frame.size.height]]
 
     bottom_container.addSubview(map_view_controller.view)
+
     addChildViewController(map_view_controller)
     map_view_controller.didMoveToParentViewController self
-
-    BW::Location.get_once(purpose: 'Center map based on current location') do |result|
-      map_view_controller.updateLocationMarker result.coordinate
-    end
+    map_view_controller.snap_to_user_location
   end
+
+  # def point_to_current_location
+  #   BW::Location.get_once(purpose: 'Center map based on current location') do |result|
+  #     if result.is_a? CLLocation
+  #       map_view_controller.updateLocationMarker result.coordinate
+  #     else
+  #       p result[:error]
+  #     end
+  #   end
+  # end
 
     # self.map_view = SelectableRadiusMapView.alloc.initWithFrame [[         0,  view_height / 2 ],
     #                                                              [ view_width, view_height / 2 ]]
@@ -102,6 +128,14 @@ class SelectLocationViewController < UIViewController
 
   def tableView(tableView, numberOfRowsInSection: section )
     locations.count
+  end
+
+  def searchableLocationTableViewController(controller, didSelectLocation: location)
+    if location.isCurrentLocation
+      map_view_controller.snap_to_user_location
+    else
+      map_view_controller.snap_to_coordinate(location.placemark.coordinate)
+    end
   end
 
 

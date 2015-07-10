@@ -30,6 +30,9 @@ Motion::Project::App.setup do |app|
   # app.sdk_version = '7.1'
   # app.deployment_target = '7.0'
 
+  IB::RakeTask.new do |project|
+  end
+
   app.icons = ["icon@2x.png", "icon-29@2x.png", "icon-40@2x.png", "icon-60@2x.png", "icon-76@2x.png", "icon-512@2x.png"]
 
   # prerendered_icon is only needed in iOS 6

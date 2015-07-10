@@ -61,7 +61,7 @@ module LocationTracker
 
     def right_buttons
       buttons = []
-      buttons.tap do|buttons|
+      buttons.tap do |buttons|
         buttons.sw_addUtilityButtonWithColor(UIColor.grayColor,
                                              title: 'Disable')
         buttons.sw_addUtilityButtonWithColor(UIColor.redColor,

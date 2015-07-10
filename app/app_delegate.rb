@@ -6,8 +6,8 @@ module LocationTracker
       @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
 
       location_controller = LocationController.new
+      
       @window.rootViewController = UINavigationController.alloc.initWithRootViewController(location_controller)
-
       @window.makeKeyAndVisible
       true
     end
