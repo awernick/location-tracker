@@ -5,7 +5,7 @@ module LocationTracker
     def application(application, didFinishLaunchingWithOptions:launchOptions)
       @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
 
-      location_controller = LocationController.new
+      location_controller = LocationsTableViewController.new
       
       @window.rootViewController = UINavigationController.alloc.initWithRootViewController(location_controller)
       @window.makeKeyAndVisible

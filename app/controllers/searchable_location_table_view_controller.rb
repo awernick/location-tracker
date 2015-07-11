@@ -1,6 +1,6 @@
 # TODO: 
-# 1. Remove duplicate locations
-# 2. Check that table is reloaded appropriately after text edit (time to use CS knowledge! :D)
+# 1. Remove duplicate locations (time to use CS knowledge! :D)
+# 2. Check that table is reloaded appropriately after text edit
 class SearchableLocationTableViewController < UIViewController
   extend IB
 
@@ -14,7 +14,7 @@ class SearchableLocationTableViewController < UIViewController
   attr_reader   :current_location_map_item
 
   def viewDidLoad
-
+    
     # Set up the table view
     table_view.delegate = self
     table_view.dataSource = self
@@ -68,6 +68,9 @@ class SearchableLocationTableViewController < UIViewController
   def tableView(tableView, cellForRowAtIndexPath: indexPath)
     @identifier ||= 'CELL_IDENTIFIER'
 
+    # Protect yourself from nil current location bruh
+    return if locations[indexPath.row].nil?
+
     cell = 
       tableView.dequeueReusableCellWithIdentifier(@identifier) || 
       UITableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, 
@@ -75,7 +78,7 @@ class SearchableLocationTableViewController < UIViewController
 
     cell.tap do |cell|
       placemark = locations[indexPath.row].placemark
-      # p placemark
+ 
       if placemark.nil? and locations[indexPath.row].isCurrentLocation
         location_string = 'Current Location'
       else

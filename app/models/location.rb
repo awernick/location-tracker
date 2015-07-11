@@ -9,10 +9,21 @@ module LocationTracker
 
     DATA_STORE = 'locations.data'
 
-    columns :label       => :string,
+    columns :name        => :string,
+            :label       => :string,
             :latitude    => :integer,
             :longitude   => :integer,
-            :radius      => :integer
+            :radius      => { type: :integer, default: ->{ 25 } }
+
+    def initialize(options = {})
+      super
+
+      self.label = options[:name]
+      self.label = options[:label]
+      self.latitude = options[:latitude]
+      self.longitude = options[:longitude]
+      # self.radius = options[:radius] - Crashes program?
+    end
 
     class << self
       def load

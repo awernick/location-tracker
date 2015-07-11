@@ -1,14 +1,16 @@
 # Falling into the MassiveViewController anti-pattern :(
 class SelectLocationViewController < UIViewController
-  attr_accessor :map_view, :locations, :geocoder, :top_container, :bottom_container
+  attr_accessor :top_container
+  attr_accessor :bottom_container
   attr_accessor :map_view_controller
+  attr_accessor :locations
+  attr_accessor :delegate
+
   def loadView
     super
 
     view_origin = navigationController.toolbar.frame.size.height
     view_height = view.frame.size.height - view_origin
-    p view.frame.size.height
-    p view_height
     view_width  = view.frame.size.width
 
     self.top_container    = UIView.alloc.initWithFrame [[         0,      view_origin ],
@@ -16,11 +18,7 @@ class SelectLocationViewController < UIViewController
 
     self.bottom_container = UIView.alloc.initWithFrame [[ 0, view_height / 2 + view_origin],
                                                         [ view_width, view_height / 2 ]]
-    p top_container.frame  
-    p bottom_container.frame
-    p view.frame                                                    
-    # top_container.alignTopEdgeWithView       view, predicate:nil                       
-    # bottom_container.alignBottomEdgeWithView view, predicate: nil
+
 
     view.addSubview top_container
     view.addSubview bottom_container
@@ -41,17 +39,8 @@ class SelectLocationViewController < UIViewController
 
     table_view_controller.delegate = self
 
-    p table_view_controller.view
-
     table_view_controller.view.frame = [[0, 0], [top_container.frame.size.width,
                                                  top_container.frame.size.height]]
-
-
-    # table_view = UITableView.alloc.initWithFrame(CGRectMake(0, 0, view.frame.size.width,
-    #                                                               view.frame.size.height))
-
-    # table_view.dataSource = locations
-    # table_view.delegate   = self
     
     self.locations = []
 
@@ -62,6 +51,7 @@ class SelectLocationViewController < UIViewController
 
   def init_map
     self.map_view_controller = SelectableRadiusMapViewController.new
+    map_view_controller.delegate = self
 
     map_view_controller.view.frame = [[0, 0], [bottom_container.frame.size.width,
                                                bottom_container.frame.size.height]]
@@ -73,85 +63,25 @@ class SelectLocationViewController < UIViewController
     map_view_controller.snap_to_user_location
   end
 
-  # def point_to_current_location
-  #   BW::Location.get_once(purpose: 'Center map based on current location') do |result|
-  #     if result.is_a? CLLocation
-  #       map_view_controller.updateLocationMarker result.coordinate
-  #     else
-  #       p result[:error]
-  #     end
-  #   end
-  # end
-
-    # self.map_view = SelectableRadiusMapView.alloc.initWithFrame [[         0,  view_height / 2 ],
-    #                                                              [ view_width, view_height / 2 ]]
-
-
-    # map_view.when_pressed do |recognizer|
-    #   touch_point = recognizer.locationInView(map_view)
-    #   coordinate = map_view.convertPoint touch_point, toCoordinateFromView: map_view
-
-    #   map_selector_manager.circleCoordinate = coordinate
-    #   map_selector_manager.circleRadius = 3000
-    #   map_selector_manager.fillColor = UIColor.clearColor
-    #   map_selector_manager.strokeColor = UIColor.redColor
-    #   map_selector_manager.applySelectorSettings
-
-    #   self.geocoder ||= CLGeocoder.alloc.init
-
-    #   annotation = Annotation.alloc.init
-    #   annotation.coordinate = coordinate
-
-    #   location = CLLocation.alloc.initWithLatitude coordinate.latitude, longitude: coordinate.longitude
-
-    #   geocoder.reverseGeocodeLocation(location, completionHandler: lambda do |placemarks, error|
-    #     break unless error.nil? && placemarks.count > 0
-    #     placemark = placemarks.objectAtIndex(0)
-    #     map_view.removeAnnotation(annotation)
-    #     annotation.title = "#{placemark.locality}"
-    #     annotation.subtitle = "Country = #{placemark.country} \nPostal Code = #{placemark.postalCode} \n"
-    #     map_view.addAnnotation(annotation)
-    #   end)
-
-    #   # circle = MKCircle.circleWithCenterCoordinate coordinate, radius:fence_distance
-    #   # map_view.addOverlay(circle)
-
-    #   map_view.addAnnotation(annotation)
-    # end
-
-
-    # view.addSubview(map_view)
-  # end
-
-  def tableView(tableView, cellForRowAtIndexPath: indexPath)
-  end
-
-  def tableView(tableView, numberOfRowsInSection: section )
-    locations.count
-  end
-
   def searchableLocationTableViewController(controller, didSelectLocation: location)
+    @location = location
+
+    # Update map view with location
     if location.isCurrentLocation
       map_view_controller.snap_to_user_location
     else
       map_view_controller.snap_to_coordinate(location.placemark.coordinate)
     end
+
+    # Update delegate's location
+    unless delegate.nil? || @location.nil?
+      delegate.selectLocationViewController self, didSelectLocation: @location
+    end
   end
 
-
-  # def current_location_clicked
-  #   BW::Location.get_once(purpose: 'Center map based on current location') do |result|
-  #     map_region = MKCoordinateRegionMake(result.coordinate, [0.05, 0.05])
-  #     map_view.showsUserLocation = true
-  #     map_view.setRegion(map_region)
-  #   end
-  # end
-
-  # TODO: Refactor pin logic to this method
-  def add_pin_to_map(coordinate, annotation = nil)
-  end
-
-  def viewDidUnload
-    # map_view = nil
+  def selectableRadiusMapViewController(controller, didChangeRadius: radius)
+    unless delegate.nil?
+      delegate.selectLocationViewController self, didChangeRadius: radius
+    end
   end
 end

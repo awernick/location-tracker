@@ -1,4 +1,5 @@
 class SelectableRadiusMapViewController < UIViewController
+  attr_accessor :delegate
 
   def loadView
     self.map_view             = MKMapView.new
@@ -20,6 +21,7 @@ class SelectableRadiusMapViewController < UIViewController
     selector_manager.applySelectorSettings
     selector_manager.delegate = self
 
+    self.radius = selector_manager.circleRadius
     self.view = map_view
   end
 
@@ -81,7 +83,10 @@ class SelectableRadiusMapViewController < UIViewController
   #### DBMapSelectorManagerDelegate 
 
   def mapSelectorManager(mapSelectorManager, didChangeRadius: radius)
-    self.radius = radius
+    p radius
+    unless delegate.nil?
+      delegate.selectableRadiusMapViewController self, didChangeRadius: radius
+    end
     # p self.radius
   end
 

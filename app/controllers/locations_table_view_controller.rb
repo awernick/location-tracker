@@ -1,5 +1,13 @@
 module LocationTracker
-  class LocationController < UIViewController
+  class LocationsTableViewController < UIViewController
+
+    def viewWillAppear(flag)
+      super
+
+      unless table_view.nil?
+        table_view.reloadData
+      end
+    end
 
     def viewDidLoad
       super
@@ -22,22 +30,21 @@ module LocationTracker
         nav.leftBarButtonItem = BW::UIBarButtonItem.system(:action)
 
         nav.rightBarButtonItem = BW::UIBarButtonItem.system(:add) do
-          add_location_controller = SelectLocationViewController.alloc.init
-          navigationController.pushViewController(add_location_controller, animated: true)
+          present_new_location_modal
         end
       end
     end
 
     def init_table
-      tableView = UITableView.alloc.initWithFrame(self.view.bounds)
-      tableView.dataSource = self
-      tableView.delegate = self
-      rmq(tableView).apply_style :table_view
-      self.view.addSubview tableView
+      self.table_view = UITableView.alloc.initWithFrame(self.view.bounds)
+      table_view.dataSource = self
+      table_view.delegate = self
+      rmq(table_view).apply_style :table_view
+      self.view.addSubview table_view
     end
 
     def tableView(tableView, didSelectRowAtIndexPath: indexPath)
-      location_detail = LocationDetailViewController.alloc.initWithLocation @data[indexPath.row]
+      location_detail = EditLocationViewController.alloc.initWithLocation @data[indexPath.row]
       self.navigationController.pushViewController(location_detail, animated: true)
     end
 
@@ -70,6 +77,15 @@ module LocationTracker
       end
     end
 
+    def present_new_location_modal
+      modal_controller = EditLocationViewController.alloc.initWithStyle UITableViewStyleGrouped
+      modal_navbar = UINavigationController.alloc.initWithRootViewController(modal_controller)
+
+      
+
+      navigationController.presentViewController(modal_navbar, animated: true, completion: nil)
+    end
+
     def nav_left_button
       puts 'Left button'
     end
@@ -95,6 +111,15 @@ module LocationTracker
     end
     def didRotateFromInterfaceOrientation(from_interface_orientation)
       # Called after rotation
+    end
+
+  private
+    def table_view=(table_view)
+      @table_view = table_view
+    end
+
+    def table_view
+      @table_view
     end
   end
 end

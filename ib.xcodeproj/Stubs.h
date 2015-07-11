@@ -43,6 +43,9 @@
 @property IBOutlet UITableView * table_view;
 
 -(IBAction) viewDidLoad;
+-(IBAction) init_locations_with_current;
+-(IBAction) numberOfSectionsInTableView:(id) tableView;
+-(IBAction) display_nearby_locations:(id) search_text;
 
 @end
 
@@ -57,7 +60,6 @@
 
 @interface SelectableRadiusMapViewController: UIViewController
 -(IBAction) loadView;
--(IBAction) update_location_marker:(id) coordinate;
 -(IBAction) snap_to_coordinate:(id) coordinate;
 -(IBAction) snap_to_user_location;
 -(IBAction) radius;
