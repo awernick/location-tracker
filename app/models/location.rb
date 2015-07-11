@@ -7,6 +7,7 @@ module LocationTracker
     include MotionModel::Model
     include MotionModel::ArrayModelAdapter
 
+    Coordinate = Struct.new(:latitude, :longitude)
     DATA_STORE = 'locations.data'
 
     columns :name        => :string,
@@ -23,6 +24,10 @@ module LocationTracker
       self.latitude = options[:latitude]
       self.longitude = options[:longitude]
       # self.radius = options[:radius] - Crashes program?
+    end
+
+    def coordinate
+      [latitude, longitude]
     end
 
     class << self

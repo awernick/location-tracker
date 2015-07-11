@@ -27,6 +27,9 @@ class EditLocationViewController < UITableViewController
     @locationCell.backgroundColor = '#88FFFFFF'.to_color
     @locationCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator
 
+    @location_manager = CLLocationManager.new
+    @location_manager.delegate = self
+
     if @location
       @labelText.text = @location.label
       @locationCell.detailTextLabel.text = @location.name
@@ -56,11 +59,11 @@ class EditLocationViewController < UITableViewController
   end
 
   def numberOfSectionsInTableView(table_view)
-    return 2
+    2
   end
 
   def tableView(table_view, numberOfRowsInSection: section)
-    return 1
+    1
   end
 
   def tableView(table_view, cellForRowAtIndexPath: index_path)
@@ -105,10 +108,44 @@ class EditLocationViewController < UITableViewController
       @location.label = @labelText.text
     end
 
+    register_location(@location)
+
     @location.save
-    LocationTracker::Location.save
 
     close
+  end
+
+  def register_location(location)
+    if CLLocationManager.isMonitoringAvailableForClass(CLCircularRegion)
+      p 'can monitor'
+    end
+
+    if location.radius > @location_manager.maximumRegionMonitoringDistance
+      location.radius = @location_manager.maximumRegionMonitoringDistance
+    end
+ 
+   # Start monitoring the location
+   region = CLCircularRegion.alloc.initWithCenter location.coordinate,
+                                          radius: location.radius, 
+                                      identifier: location.label
+
+   @location_manager.startMonitoringForRegion(region)
+
+  end
+
+  def locationManager(manager, didStartMonitoringForRegion: region)
+    p 'Started monitoring'
+    p region.identifier
+    p region.radius
+    p region.center
+  end
+
+  def locationManager(manager, monitoringDidFailForRegion: region, withError: error)
+    p "Monitoring failed for" + region.identifier
+  end
+ 
+  def locationManager(manager, didFailWithError: error)
+    p "Location Manager failed with the following error: " + error 
   end
 
   def is_modal?
@@ -122,5 +159,13 @@ class EditLocationViewController < UITableViewController
     else
       navigationController.popViewControllerAnimated(true)
     end
+  end
+
+  # Necessary monkey patch. For some strange reason, iPhone6 
+  # and larger devices use CGPoint instead of CLLLocationCoorindate2D
+  # as the coordinate property for MKMapItem's placemark
+  CGPoint.class_eval do
+    alias_method  :latitude,  :y
+    alias_method  :longitude, :x
   end
 end

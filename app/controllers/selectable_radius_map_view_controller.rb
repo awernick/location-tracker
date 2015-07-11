@@ -34,7 +34,7 @@ class SelectableRadiusMapViewController < UIViewController
   #   snap_to_coordinate(coordinate)
   # end
 
-  def snap_to_coordinate(coordinate)
+  def snap_to(coordinate)
     # Update annotations coordinate
     @location = map_view.annotations.last || Annotation.new
     @location.coordinate = coordinate
@@ -47,15 +47,15 @@ class SelectableRadiusMapViewController < UIViewController
     map_view.setRegion region, animated: true
   end
 
-  def snap_to_user_location
-    BW::Location.get_once(purpose: 'Center map on user location') do |result|
-      if result.is_a? CLLocation
-        snap_to_coordinate(result.coordinate)
-      else
-        p result[:error]
-      end
-    end
-  end
+  # def snap_to_user_location
+  #   BW::Location.get_once(purpose: 'Center map on user location') do |result|
+  #     if result.is_a? CLLocation
+  #       snap_to_coordinate(result.coordinate)
+  #     else
+  #       p result[:error]
+  #     end
+  #   end
+  # end
 
   #### MKMapViewDelegate
 
@@ -88,6 +88,10 @@ class SelectableRadiusMapViewController < UIViewController
       delegate.selectableRadiusMapViewController self, didChangeRadius: radius
     end
     # p self.radius
+  end
+
+  def mapSelectorManager(mapSelectorManager, didChangeCoordinate: coordinate)
+    delegate.selectableRadiusMapViewController self, didChangeCoordinate: coordinate
   end
 
 protected

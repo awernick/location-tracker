@@ -60,28 +60,77 @@ class SelectLocationViewController < UIViewController
 
     addChildViewController(map_view_controller)
     map_view_controller.didMoveToParentViewController self
-    map_view_controller.snap_to_user_location
+    # map_view_controller.snap_to_user_location
   end
 
   def searchableLocationTableViewController(controller, didSelectLocation: location)
-    @location = location
+    self.location = location
+  end
 
-    # Update map view with location
-    if location.isCurrentLocation
-      map_view_controller.snap_to_user_location
-    else
-      map_view_controller.snap_to_coordinate(location.placemark.coordinate)
+  def get_current_location(&block)
+    BW::Location.get_once(purpose: 'Center map on user location') do |result|
+      return if result.is_a? Hash # Error ocurred
+      block.call(result) if block
     end
+  end
 
-    # Update delegate's location
-    unless delegate.nil? || @location.nil?
-      delegate.selectLocationViewController self, didSelectLocation: @location
+  def notify_location_selected
+    unless delegate.nil? || location.nil?
+      delegate.selectLocationViewController self, didSelectLocation: location
     end
+  end
+
+  def selectableRadiusMapViewController(controller, didChangeCoordinate: coordinate)
+    update_location_coordinate(coordinate)
   end
 
   def selectableRadiusMapViewController(controller, didChangeRadius: radius)
     unless delegate.nil?
       delegate.selectLocationViewController self, didChangeRadius: radius
     end
+  end
+
+  def update_location_coordinate(coordinate)
+    @geocoder ||= CLGeocoder.new
+
+    if coordinate.is_a? CLLocationCoordinate2D
+      coordinate = CLLocation.alloc.initWithLatitude(coordinate.latitude, longitude: coordinate.longitude)
+    end
+
+    @geocoder.reverseGeocodeLocation(coordinate, completionHandler: ->(placemarks, error){
+      if error
+        placemark = MKPlacemark.alloc.initWithCoordinate coordinate.coordinate,
+                                      addressDictionary: nil
+      else
+        placemark = placemarks.first
+      end
+
+      @location = MKMapItem.alloc.initWithPlacemark(placemark)
+
+      map_view_controller.snap_to(@location.placemark.coordinate)
+      notify_location_selected
+    })
+  end
+
+private
+
+  def location=(location)
+    if location.isCurrentLocation
+      get_current_location do |result|
+        update_location_coordinate(result)
+      end
+    else
+
+      @location = location
+
+      # Update map view with location
+      map_view_controller.snap_to(location.placemark.coordinate)
+
+      notify_location_selected
+    end
+  end
+
+  def location
+    @location
   end
 end

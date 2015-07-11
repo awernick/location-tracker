@@ -56,8 +56,8 @@ class SearchableLocationTableViewController < UIViewController
   end
 
   def tableView(tableView, didSelectRowAtIndexPath: indexPath)
-    search_bar.endEditing(true)
     tableView.deselectRowAtIndexPath indexPath, animated: true
+    search_bar.endEditing(true)
 
     if delegate
       # Trust that the delegate implements the protocol (might add check later)

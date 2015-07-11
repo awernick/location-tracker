@@ -6,6 +6,7 @@ module LocationTracker
 
       unless table_view.nil?
         table_view.reloadData
+        Location.save
       end
     end
 
@@ -98,10 +99,12 @@ module LocationTracker
     def supportedInterfaceOrientations
       UIInterfaceOrientationMaskAll
     end
+
     def willAnimateRotationToInterfaceOrientation(orientation, duration: duration)
       # Called before rotation
       rmq.all.reapply_styles
     end
+
     def viewWillLayoutSubviews
       # Called anytime the frame changes, including rotation, and when the in-call status bar shows or hides
       #
@@ -109,6 +112,7 @@ module LocationTracker
       # of willAnimateRotationToInterfaceOrientation, however make sure your styles only apply the layout when
       # called multiple times
     end
+    
     def didRotateFromInterfaceOrientation(from_interface_orientation)
       # Called after rotation
     end
