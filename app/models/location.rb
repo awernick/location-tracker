@@ -12,8 +12,8 @@ module LocationTracker
 
     columns :name        => :string,
             :label       => :string,
-            :latitude    => :integer,
-            :longitude   => :integer,
+            :latitude    => :float,
+            :longitude   => :float,
             :radius      => { type: :integer, default: ->{ 25 } }
 
     def initialize(options = {})

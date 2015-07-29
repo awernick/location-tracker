@@ -11,7 +11,7 @@ Bundler.require
 Motion::Project::App.setup do |app|
 
   app.name = 'location_tracker'
-  app.identifier = 'com.your_domain_here.location_tracker'
+  app.identifier = 'com.napkin-studio.location_tracker'
   app.short_version = '0.1.0'
   app.version = app.short_version
 
@@ -56,15 +56,18 @@ Motion::Project::App.setup do |app|
     pod 'FLKAutoLayout', '~> 0.2.1'
   end
  
-  # app.development do
-  #   app.codesign_certificate = "iPhone Developer: YOURNAME"
-  #   app.provisioning_profile = "signing/location_tracker.mobileprovision"
-  # end
+  app.development do
+    # app.codesign_certificate = "iPhone Developer: Alan "
+    app.codesign_certificate = "Alan Wernick"
+    # app.seed_id = "7ENH393J5J"
+    app.provisioning_profile = "location_tracker.mobileprovision"
+    app.entitlements['application-identifier'] = app.seed_id + '.' + app.identifier
+  end
 
   app.release do
     app.entitlements['get-task-allow'] = false
     app.codesign_certificate = 'iPhone Distribution: YOURNAME'
-    app.provisioning_profile = "signing/location_tracker.mobileprovision"
+    app.provisioning_profile = "location_tracker.mobileprovision"
     app.seed_id = "YOUR_SEED_ID"
     app.entitlements['application-identifier'] = app.seed_id + '.' + app.identifier
     app.entitlements['keychain-access-groups'] = [ app.seed_id + '.' + app.identifier ]

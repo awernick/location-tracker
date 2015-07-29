@@ -105,7 +105,13 @@ class SelectLocationViewController < UIViewController
         placemark = placemarks.first
       end
 
+      NSLog(coordinate.coordinate.latitude.to_s)
+      NSLog(coordinate.coordinate.longitude.to_s)
+
       @location = MKMapItem.alloc.initWithPlacemark(placemark)
+
+      NSLog(@location.placemark.coordinate.latitude.to_s)
+      NSLog(@location.placemark.coordinate.longitude.to_s)
 
       map_view_controller.snap_to(@location.placemark.coordinate)
       notify_location_selected

@@ -5,6 +5,7 @@ gem 'rake'
 gem 'ruby_motion_query'
 gem 'motion_model'
 gem 'motion-cocoapods'
+gem 'sugarcube', :require => 'sugarcube-to_s'
 
 # Pretty printing
 #gem 'motion_print' 

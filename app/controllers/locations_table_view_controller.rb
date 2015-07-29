@@ -1,5 +1,6 @@
 module LocationTracker
   class LocationsTableViewController < UIViewController
+    attr_accessor :location_manager
 
     def viewWillAppear(flag)
       super
@@ -17,6 +18,7 @@ module LocationTracker
       # self.edgesForExtendedLayout = UIRectEdgeNone
       Location.load
       @data  = Location.all
+
 
       rmq.stylesheet = LocationControllerStylesheet
       init_nav
@@ -56,9 +58,9 @@ module LocationTracker
     def tableView(tableView, cellForRowAtIndexPath: indexPath)
       @identifier ||= 'CELL_IDENTIFIER'
 
-      cell = 
-        tableView.dequeueReusableCellWithIdentifier(@identifier) || 
-        SWTableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, 
+      cell =
+        tableView.dequeueReusableCellWithIdentifier(@identifier) ||
+        SWTableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault,
                                             reuseIdentifier: @identifier)
 
       cell.tap do |cell|
@@ -82,7 +84,7 @@ module LocationTracker
       modal_controller = EditLocationViewController.alloc.initWithStyle UITableViewStyleGrouped
       modal_navbar = UINavigationController.alloc.initWithRootViewController(modal_controller)
 
-      
+
 
       navigationController.presentViewController(modal_navbar, animated: true, completion: nil)
     end
@@ -112,7 +114,7 @@ module LocationTracker
       # of willAnimateRotationToInterfaceOrientation, however make sure your styles only apply the layout when
       # called multiple times
     end
-    
+
     def didRotateFromInterfaceOrientation(from_interface_orientation)
       # Called after rotation
     end
@@ -143,5 +145,3 @@ end
 
 # Then in willAnimateRotationToInterfaceOrientation
 rmq(:reapply_style).reapply_styles
-
-

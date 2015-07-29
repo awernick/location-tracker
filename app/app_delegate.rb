@@ -6,7 +6,7 @@ module LocationTracker
       @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
 
       location_controller = LocationsTableViewController.new
-      
+
       @window.rootViewController = UINavigationController.alloc.initWithRootViewController(location_controller)
       @window.makeKeyAndVisible
 
@@ -18,23 +18,38 @@ module LocationTracker
       true
     end
 
-    # Remove this if you are only supporting portrait
-    def application(application, willChangeStatusBarOrientation: new_orientation, duration: duration)
-      # Manually set RMQ's orientation before the device is actually oriented
-      # So that we can do stuff like style views before the rotation begins
-      rmq.device.orientation = new_orientation
+    # # Remove this if you are only supporting portrait
+    # def application(application, willChangeStatusBarOrientation: new_orientation, duration: duration)
+    #   # Manually set RMQ's orientation before the device is actually oriented
+    #   # So that we can do stuff like style views before the rotation begins
+    #   rmq.device.orientation = new_orientation
+    # end
+
+    def applicationWillEnterForeground(application)
+
     end
 
-    def locationManager(manager, didEnterRegion: region)
-      handleRegionEvent(region)
+    def applicationDidEnterBackground(application)
+      p 'entering background'
+      NSLog('Entering background')
+      
+      if CLLocationManager.significantLocationChangeMonitoringAvailable
+        p 'significant location monitoring'
+    		@location_manager.stopUpdatingLocation
+    		@location_manager.startMonitoringSignificantLocationChanges
+    	else
+    		NSLog("Significant location change monitoring is not available.")
+    	end
     end
 
-    def locationManager(manager, didExitRegion: region)
-      handleRegionEvent(region)
-    end
+    def applicationDidBecomeActive(application)
+      p 'became active'
+      NSLog('Became active')
 
-    def handleRegionEvent(region)
-      p 'region event for: ' + region.identifier
+      if CLLocationManager.significantLocationChangeMonitoringAvailable
+        @location_manager.stopMonitoringSignificantLocationChanges
+		    @location_manager.startUpdatingLocation
+      end
     end
   end
 end
