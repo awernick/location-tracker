@@ -3,17 +3,15 @@ module LocationTracker
     attr_reader :window
 
     def application(application, didFinishLaunchingWithOptions:launchOptions)
+      
+      application.registerUserNotificationSettings(UIUserNotificationSettings.settingsForTypes(UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound, categories:nil))
       @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
 
       location_controller = LocationsTableViewController.new
+      @location_manager = location_controller.location_manager
 
       @window.rootViewController = UINavigationController.alloc.initWithRootViewController(location_controller)
       @window.makeKeyAndVisible
-
-      # Geofencing events
-      @location_manager = CLLocationManager.new
-      @location_manager.delegate = self
-      @location_manager.requestAlwaysAuthorization()
 
       true
     end
@@ -30,11 +28,11 @@ module LocationTracker
     end
 
     def applicationDidEnterBackground(application)
-      p 'entering background'
-      NSLog('Entering background')
-      
+
       if CLLocationManager.significantLocationChangeMonitoringAvailable
-        p 'significant location monitoring'
+        p 'significant location monitoring started'
+        NSLog('significant location monitoring started')
+
     		@location_manager.stopUpdatingLocation
     		@location_manager.startMonitoringSignificantLocationChanges
     	else

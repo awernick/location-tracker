@@ -1,6 +1,18 @@
 module LocationTracker
   class LocationsTableViewController < UIViewController
     attr_accessor :location_manager
+    attr_accessor :table_view
+
+    def init
+      super
+      
+      @location_manager = CLLocationManager.new
+      @location_manager.delegate = self
+      @location_manager.desiredAccuracy = KCLLocationAccuracyBest
+      @location_manager.requestAlwaysAuthorization()
+
+      self
+    end
 
     def viewWillAppear(flag)
       super
@@ -18,7 +30,6 @@ module LocationTracker
       # self.edgesForExtendedLayout = UIRectEdgeNone
       Location.load
       @data  = Location.all
-
 
       rmq.stylesheet = LocationControllerStylesheet
       init_nav
@@ -48,6 +59,7 @@ module LocationTracker
 
     def tableView(tableView, didSelectRowAtIndexPath: indexPath)
       location_detail = EditLocationViewController.alloc.initWithLocation @data[indexPath.row]
+      location_detail.delegate = self
       self.navigationController.pushViewController(location_detail, animated: true)
     end
 
@@ -59,9 +71,9 @@ module LocationTracker
       @identifier ||= 'CELL_IDENTIFIER'
 
       cell =
-        tableView.dequeueReusableCellWithIdentifier(@identifier) ||
-        SWTableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault,
-                                            reuseIdentifier: @identifier)
+      tableView.dequeueReusableCellWithIdentifier(@identifier) ||
+      SWTableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault,
+        reuseIdentifier: @identifier)
 
       cell.tap do |cell|
         cell.textLabel.text = @data[indexPath.row].label
@@ -73,75 +85,86 @@ module LocationTracker
       buttons = []
       buttons.tap do |buttons|
         buttons.sw_addUtilityButtonWithColor(UIColor.grayColor,
-                                             title: 'Disable')
+         title: 'Disable')
         buttons.sw_addUtilityButtonWithColor(UIColor.redColor,
-                                             title: 'Delete')
+         title: 'Delete')
 
       end
     end
 
     def present_new_location_modal
       modal_controller = EditLocationViewController.alloc.initWithStyle UITableViewStyleGrouped
+      modal_controller.delegate = self
       modal_navbar = UINavigationController.alloc.initWithRootViewController(modal_controller)
-
-
 
       navigationController.presentViewController(modal_navbar, animated: true, completion: nil)
     end
 
-    def nav_left_button
-      puts 'Left button'
+    ## Region Handling
+
+    def editLocationViewController(controller, didEditLocation: location)
+    register_location(location)
     end
 
-    def nav_right_button
-      puts 'Right button'
+    def register_location(location)
+    if CLLocationManager.isMonitoringAvailableForClass(CLCircularRegion)
+      NSLog("Can monitor locations")
     end
 
-    # Remove these if you are only supporting portrait
-    def supportedInterfaceOrientations
-      UIInterfaceOrientationMaskAll
+    if location.radius > location_manager.maximumRegionMonitoringDistance
+      location.radius = location_manager.maximumRegionMonitoringDistance
     end
 
-    def willAnimateRotationToInterfaceOrientation(orientation, duration: duration)
-      # Called before rotation
-      rmq.all.reapply_styles
+       # Start monitoring the location
+       region = CLCircularRegion.alloc.initWithCenter location.coordinate,
+       radius: location.radius, 
+       identifier: location.label
+
+       location_manager.startMonitoringForRegion(region, desiredAccuracy: KCLLocationAccuracyBest)
+     end
+
+     def locationManager(manager, didDetermineState: state, forRegion: region)
+      NSLog("Region: #{region.center.latitude} #{region.center.longitude}")
+      NSLog("State: #{state}")
+      handleRegionEvent(region, state)
     end
 
-    def viewWillLayoutSubviews
-      # Called anytime the frame changes, including rotation, and when the in-call status bar shows or hides
-      #
-      # If you need to reapply styles during rotation, do it here instead
-      # of willAnimateRotationToInterfaceOrientation, however make sure your styles only apply the layout when
-      # called multiple times
+    def locationManager(manager, didEnterRegion: region)
+      NSLog("ENTER REGION!")
+      handleRegionEvent(region, CLRegionStateInside)
     end
 
-    def didRotateFromInterfaceOrientation(from_interface_orientation)
-      # Called after rotation
+    def locationManager(manager, didExitRegion: region)
+      NSLog("EXIT REGION!")
+      handleRegionEvent(region, CLRegionStateOutside)
     end
 
-  private
-    def table_view=(table_view)
-      @table_view = table_view
+    def handleRegionEvent(region, state)
+      if state == CLRegionStateInside
+        notification = UILocalNotification.new
+        notification.alertTitle = 'Region Enter Event'
+        notification.alertBody = "#{region.identifier}"
+        UIApplication.sharedApplication.presentLocalNotificationNow(notification)
+      elsif state == CLRegionStateOutside
+        notification = UILocalNotification.new
+        notification.alertTitle = 'Region Exit Event'
+        notification.alertBody = "#{region.identifier}"
+        UIApplication.sharedApplication.presentLocalNotificationNow(notification)
+      end
     end
 
-    def table_view
-      @table_view
+    def locationManager(manager, didStartMonitoringForRegion: region)
+      location_manager.requestStateForRegion(region)
+    end
+
+    def locationManager(manager, monitoringDidFailForRegion: region, withError: error)
+      NSLog("Location Manager failed to monitor the region #{region.identifier} with the following error: ")
+      NSLog(error.to_s)
+    end
+
+    def locationManager(manager, didFailWithError: error)
+      NSLog("Location manager failed with the following error:")
+      NSLog(error.to_s)
     end
   end
 end
-
-
-__END__
-
-# You don't have to reapply styles to all UIViews, if you want to optimize,
-# another way to do it is tag the views you need to restyle in your stylesheet,
-# then only reapply the tagged views, like so:
-def logo(st)
-  st.frame = {t: 10, w: 200, h: 96}
-  st.centered = :horizontal
-  st.image = image.resource('logo')
-  st.tag(:reapply_style)
-end
-
-# Then in willAnimateRotationToInterfaceOrientation
-rmq(:reapply_style).reapply_styles

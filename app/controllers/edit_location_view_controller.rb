@@ -1,5 +1,6 @@
 class EditLocationViewController < UITableViewController
-  @@counter = 0
+  attr_accessor :delegate
+  
   SECTIONS = {label: 0, location: 1}
 
   def initWithLocation(location)
@@ -28,11 +29,7 @@ class EditLocationViewController < UITableViewController
     @locationCell.backgroundColor = '#88FFFFFF'.to_color
     @locationCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator
 
-    @location_manager = CLLocationManager.new
-    @location_manager.delegate = self
-    @location_manager.desiredAccuracy = KCLLocationAccuracyBest
-    @location_manager.requestAlwaysAuthorization()
-
+    
     if @location
       @labelText.text = @location.label
       @locationCell.detailTextLabel.text = @location.name
@@ -105,107 +102,19 @@ class EditLocationViewController < UITableViewController
   end
 
   def save_location_and_close
+    NSLog('called')
+
     if @labelText.text.empty? # Use NSNotifcations or KVO instead
       @location.label = @locationCell.detailTextLabel.text
     else
       @location.label = @labelText.text
     end
 
-    register_location(@location)
+    delegate.editLocationViewController(self, didEditLocation: @location)
 
     @location.save
 
     close
-  end
-
-  def register_location(location)
-    if CLLocationManager.isMonitoringAvailableForClass(CLCircularRegion)
-      p 'can monitor'
-      NSLog("can monitor")
-    end
-
-    if location.radius > @location_manager.maximumRegionMonitoringDistance
-      location.radius = @location_manager.maximumRegionMonitoringDistance
-    end
-
-   p 'location register'
-   NSLog('longitude register')
-   # NSLog(location)
-   # NSLog(location.coordinate.latitude)
-   # NSLog(location.coordinate.longitude)
-   p 'location register done'
-
-   # Start monitoring the location
-   region = CLCircularRegion.alloc.initWithCenter location.coordinate,
-                                          radius: location.radius, 
-                                      identifier: location.label
-   # NSLog(region.center.latitude)
-   # NSLog(region.center.longitude)
-
-   @location_manager.startMonitoringForRegion(region, desiredAccuracy: KCLLocationAccuracyBest)
-   # @location_manager.requestStateForRegion(region)
-   @location_manager.startUpdatingLocation()
-  end
-
-  # def locationManager(manager, didUpdateToLocation: newLocation, fromLocation: oldLocation)
-  #   NSLog("Location: #{newLocation.coordinate.latitude} #{newLocation.coordinate.longitude}")
-  # end
-
-  def locationManager(manager, didDetermineState: state, forRegion: region)
-    NSLog("Region: #{region.center.latitude} #{region.center.longitude}")
-    NSLog("Update: #{region} #{state}")
-    if state == 1
-      handleRegionEvent(region)
-    end
-  end
-
-  def locationManager(manager, didEnterRegion: region)
-    NSLog("ENTER REGION!")
-    handleRegionEvent(region)
-  end
-
-  def locationManager(manager, didExitRegion: region)
-    NSLog("EXIT REGION!")
-    handleRegionEvent(region)
-  end
-
-  def handleRegionEvent(region)
-    alert = UIAlertView.alloc.initWithTitle('Region event', message: "#{region.identifier}", delegate: nil, cancelButtonTitle: 'OK', otherButtonTitles: nil)
-    alert.show
-    p 'region event for: ' + region.identifier
-  end
-
-  def locationManager(manager, didStartMonitoringForRegion: region)
-    p 'Started monitoring'
-    NSLog("started monitor")
-    NSLog("Regions Monitored: #{@location_manager.monitoredRegions.count}")
-    p region.identifier
-    p region.radius
-    p region.center
-  end
-
-  def locationManager(manager, monitoringDidFailForRegion: region, withError: error)
-    @@counter += 1
-    NSLog('called')
-    NSLog(region.identifier)
-    NSLog("Counter: #{@@counter}")
-
-    p "Monitoring failed for" + region.identifier
-    NSLog(error.to_s)
-    NSLog("error location")
-    NSLog("Regions Monitored: #{@location_manager.monitoredRegions.count}")
-
-    # @location_manager.stopMonitoringForRegion(region)
-    # NSLog(@location_manager.monitoredRegions.to_s)
-    # for monitored in @location_manager.monitoredRegions
-    #   NSLog(@location_manager.monitoredRegions.to_s)
-    #   @location_manager.stopMonitoringForRegion(monitored)
-    # end
-  end
- 
-  def locationManager(manager, didFailWithError: error)
-    p "Location Manager failed with the following error: " + error 
-    NSLog("Location manager failed with error")
   end
 
   def is_modal?
