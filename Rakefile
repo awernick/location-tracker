@@ -2,7 +2,7 @@
 $:.unshift('/Library/RubyMotion/lib')
 require 'motion/project/template/ios'
 require 'bubble-wrap'
-require 'bubble-wrap/all'
+require 'bubble-wrap/ui'
 require 'bundler'
 Bundler.require
 
@@ -51,7 +51,7 @@ Motion::Project::App.setup do |app|
   # app.vendor_project('vendor/DSLCalendarView', :static, :cflags => '-fobjc-arc') # Using arc
   #
   app.pods do
-    pod 'SWTableViewCell', '~> 0.3.7'
+    pod 'MBCalendarKit', '~>3.0.4'
     pod 'DBMapSelectorViewController', '~> 1.2.0'
     pod 'FLKAutoLayout', '~> 0.2.1'
   end

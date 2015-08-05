@@ -1,16 +1,16 @@
 PODS:
   - DBMapSelectorViewController (1.2.1)
   - FLKAutoLayout (0.2.1)
-  - SWTableViewCell (0.3.7)
+  - MBCalendarKit (3.0.4)
 
 DEPENDENCIES:
   - DBMapSelectorViewController (~> 1.2.0)
   - FLKAutoLayout (~> 0.2.1)
-  - SWTableViewCell (~> 0.3.7)
+  - MBCalendarKit (~> 3.0.4)
 
 SPEC CHECKSUMS:
   DBMapSelectorViewController: b4b38dcd1ed10eba7b8b7a94d4376dd35bdbfce6
   FLKAutoLayout: 9db6b30c2008d230da608e62c607b11c23b942e6
-  SWTableViewCell: 2a94aadc9d47b2b611fa064566bf57948b95b579
+  MBCalendarKit: 2a3a60f902162a03bb4957966a4b795af998211f
 
 COCOAPODS: 0.37.2
