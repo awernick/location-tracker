@@ -11,7 +11,8 @@ class Location
   # Relations
   has_many :visits
 
-  columns :name        => :string,
+  columns :_id         => :string,
+          :name        => :string,
           :label       => :string,
           :latitude    => :float,
           :longitude   => :float,
@@ -20,7 +21,7 @@ class Location
   def initialize(options = {})
     super
 
-    self.label = options[:name]
+    self.name = options[:name]
     self.label = options[:label]
     self.latitude = options[:latitude]
     self.longitude = options[:longitude]
@@ -31,6 +32,15 @@ class Location
     [latitude, longitude]
   end
 
+  def to_h
+    {
+      label: label,
+      name: name,
+      radius: radius,
+      latitude: latitude,
+      longitude: longitude
+    }
+  end
 
   def ==(location)
     return latitude == location.latitude && longitude == location.longitude

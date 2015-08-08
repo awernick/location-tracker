@@ -29,12 +29,13 @@ class EditLocationViewController < UITableViewController
     @locationCell.backgroundColor = '#88FFFFFF'.to_color
     @locationCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator
 
-    
+    @location_controller = LocationsController.new($json_client)
+ 
     if @location
       @labelText.text = @location.label
       @locationCell.detailTextLabel.text = @location.name
     else
-      @location = LocationTracker::Location.new
+      @location = Location.new
     end
   end
 
@@ -112,7 +113,13 @@ class EditLocationViewController < UITableViewController
 
     delegate.editLocationViewController(self, didEditLocation: @location)
 
-    @location.save
+    @location.save!
+
+    if @location._id
+      @location_controller.update_location(@location)
+    else
+      @location_controller.add_location(@location)
+    end
 
     close
   end
@@ -126,6 +133,7 @@ class EditLocationViewController < UITableViewController
     if is_modal?
       dismissViewControllerAnimated(true, completion: nil)
     else
+
       navigationController.popViewControllerAnimated(true)
     end
   end

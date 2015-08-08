@@ -7,6 +7,9 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    afmotion (2.5)
+      motion-cocoapods (>= 1.4.1)
+      motion-require (>= 0.1)
     bubble-wrap (1.8.0)
     claide (0.8.2)
     cocoapods (0.37.2)
@@ -46,6 +49,7 @@ GEM
     molinillo (0.2.3)
     motion-cocoapods (1.7.1)
       cocoapods (>= 0.34)
+    motion-env (0.0.4)
     motion-require (0.2.0)
     motion-support (0.2.6)
       motion-require (>= 0.0.6)
@@ -70,12 +74,14 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  afmotion
   ib
   motion-cocoapods
+  motion-env
   motion_model
   rake
   ruby_motion_query
   sugarcube
 
 BUNDLED WITH
-   1.10.5
+   1.10.6

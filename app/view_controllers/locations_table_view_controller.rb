@@ -10,8 +10,6 @@ class LocationsTableViewController < UIViewController
     @location_manager.desiredAccuracy = KCLLocationAccuracyBest
     @location_manager.requestAlwaysAuthorization()
 
-    # Location.load
-
     self
   end
 
@@ -29,7 +27,7 @@ class LocationsTableViewController < UIViewController
 
     # Sets a top of 0 to be below the navigation control, it's best not to do this
     # self.edgesForExtendedLayout = UIRectEdgeNone
-    @visits_controller = VisitsController.instance
+    @visits_controller = VisitsController.new($json_client)
     @data  = Location.all
 
     rmq.stylesheet = LocationControllerStylesheet
@@ -59,10 +57,10 @@ class LocationsTableViewController < UIViewController
   end
 
   def tableView(tableView, didSelectRowAtIndexPath: indexPath)
-    location_detail = CalendarViewController.new
+    # location_detail = CalendarViewController.new
     
-    # location_detail = EditLocationViewController.alloc.initWithLocation @data[indexPath.row]
-    # location_detail.delegate = self
+    location_detail = EditLocationViewController.alloc.initWithLocation @data[indexPath.row]
+    location_detail.delegate = self
     self.navigationController.pushViewController(location_detail, animated: true)
   end
 
@@ -171,6 +169,9 @@ class LocationsTableViewController < UIViewController
   end
 
   def handleRegionEvent(region, state)
+    p 'Handling region event'
+    NSLog('Handling region event')
+    
     @visits_controller.handle_region_event(region, state)
 
     if state == CLRegionStateInside

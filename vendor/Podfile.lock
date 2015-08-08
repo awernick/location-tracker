@@ -1,14 +1,37 @@
 PODS:
+  - AFNetworking (2.5.4):
+    - AFNetworking/NSURLConnection (= 2.5.4)
+    - AFNetworking/NSURLSession (= 2.5.4)
+    - AFNetworking/Reachability (= 2.5.4)
+    - AFNetworking/Security (= 2.5.4)
+    - AFNetworking/Serialization (= 2.5.4)
+    - AFNetworking/UIKit (= 2.5.4)
+  - AFNetworking/NSURLConnection (2.5.4):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLSession (2.5.4):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (2.5.4)
+  - AFNetworking/Security (2.5.4)
+  - AFNetworking/Serialization (2.5.4)
+  - AFNetworking/UIKit (2.5.4):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
   - DBMapSelectorViewController (1.2.1)
   - FLKAutoLayout (0.2.1)
   - MBCalendarKit (3.0.4)
 
 DEPENDENCIES:
+  - AFNetworking (~> 2.5)
   - DBMapSelectorViewController (~> 1.2.0)
   - FLKAutoLayout (~> 0.2.1)
   - MBCalendarKit (~> 3.0.4)
 
 SPEC CHECKSUMS:
+  AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
   DBMapSelectorViewController: b4b38dcd1ed10eba7b8b7a94d4376dd35bdbfce6
   FLKAutoLayout: 9db6b30c2008d230da608e62c607b11c23b942e6
   MBCalendarKit: 2a3a60f902162a03bb4957966a4b795af998211f

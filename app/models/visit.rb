@@ -6,7 +6,8 @@ class Visit
 
   belongs_to  :location
 
-  columns     :start_time  => {type: :date, default: Time.now},
+  columns     :_id         => {type: :string},
+              :start_time  => {type: :date, default: Time.now},
               :end_time    => {type: :date, default: Time.now},
               :open        => {type: :boolean, default: true}
 
@@ -20,6 +21,16 @@ class Visit
 
   def after_delete(sender)
     Visit.save
+  end
+
+  def to_h
+    {
+      id: id,
+      start_time:  start_time.to_s,
+      end_time: end_time.to_s,
+      open: open,
+      location_id: location_id
+    }
   end
 
   class << self

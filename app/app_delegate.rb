@@ -3,7 +3,15 @@ module LocationTracker
     attr_reader :window
 
     def application(application, didFinishLaunchingWithOptions:launchOptions)
-      
+      $json_client = AFMotion::SessionClient.build("#{ENV['SERVER_ADDRESS']}") do
+          p ENV['SERVER_ADDRESS']
+
+          session_configuration :default
+
+          header "Accept", "application/json"
+          response_serializer :json
+      end
+
       application.registerUserNotificationSettings(UIUserNotificationSettings.settingsForTypes(UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound, categories:nil))
       @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
 

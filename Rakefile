@@ -3,6 +3,7 @@ $:.unshift('/Library/RubyMotion/lib')
 require 'motion/project/template/ios'
 require 'bubble-wrap'
 require 'bubble-wrap/ui'
+require 'bubble-wrap/core'
 require 'bundler'
 Bundler.require
 
@@ -17,6 +18,10 @@ Motion::Project::App.setup do |app|
 
   app.info_plist['NSLocationAlwaysUsageDescription'] = 'Description'
   app.info_plist['NSLocationWhenInUseUsageDescription'] = 'Description'
+
+  # Enviornment variables
+  # app.env['SERVER_ADDRESS'] = 'https://floating-coast-5593.herokuapp.com/api/v1'
+  # app.env['SERVER_ADDRESS'] = 'http://localhost:3000/api/v1'
 
   # SDK 8 for iOS 8 and above
   # app.sdk_version = '8.2'

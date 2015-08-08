@@ -2,9 +2,11 @@ source 'https://rubygems.org'
 
 gem 'ib'
 gem 'rake'
-gem 'ruby_motion_query'
+gem 'afmotion'
+gem 'motion-env'
 gem 'motion_model'
 gem 'motion-cocoapods'
+gem 'ruby_motion_query'
 gem 'sugarcube', :require => 'sugarcube-to_s'
 
 # Pretty printing
