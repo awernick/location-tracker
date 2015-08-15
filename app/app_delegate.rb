@@ -3,21 +3,12 @@ module LocationTracker
     attr_reader :window
 
     def application(application, didFinishLaunchingWithOptions:launchOptions)
-      $json_client = AFMotion::SessionClient.build("#{ENV['SERVER_ADDRESS']}") do
-          p ENV['SERVER_ADDRESS']
-
-          session_configuration :default
-
-          header "Accept", "application/json"
-          response_serializer :json
-      end
-
       application.registerUserNotificationSettings(UIUserNotificationSettings.settingsForTypes(UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound, categories:nil))
       @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
 
       location_controller = LocationsTableViewController.new
       @location_manager = location_controller.location_manager
-
+      p 'hey'
       @window.rootViewController = UINavigationController.alloc.initWithRootViewController(location_controller)
       @window.makeKeyAndVisible
 
@@ -36,7 +27,6 @@ module LocationTracker
     end
 
     def applicationDidEnterBackground(application)
-
       if CLLocationManager.significantLocationChangeMonitoringAvailable
         p 'significant location monitoring started'
         NSLog('significant location monitoring started')

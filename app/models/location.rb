@@ -3,37 +3,26 @@
 # a map. 
 # Messages
 class Location
-  include MotionModel::Model
-  include MotionModel::ArrayModelAdapter
+  include Yapper::Document
 
-  DATA_STORE = 'locations.data'
+  attr_accessor :new_record
 
   # Relations
   has_many :visits
 
-  columns :_id         => :string,
-          :name        => :string,
-          :label       => :string,
-          :latitude    => :float,
-          :longitude   => :float,
-          :radius      => { type: :integer, default: ->{ 25 } }
-
-  def initialize(options = {})
-    super
-
-    self.name = options[:name]
-    self.label = options[:label]
-    self.latitude = options[:latitude]
-    self.longitude = options[:longitude]
-    # self.radius = options[:radius] - Crashes program?
-  end
-
+  field :name,        type: :string
+  field :label,       type: :string
+  field :latitude,    type: :float
+  field :longitude,   type: :float
+  field :radius,      type: :integer, :default => 25 
+  
   def coordinate
     [latitude, longitude]
   end
 
   def to_h
     {
+      id: id,
       label: label,
       name: name,
       radius: radius,
@@ -46,23 +35,17 @@ class Location
     return latitude == location.latitude && longitude == location.longitude
   end
 
-  def after_save(sender)
-    p 'Saving location'
-    p sender.to_s
-    Location.save
-  end
-
-  def after_delete(sender)
-    Location.save
-  end
-
   class << self
-    def load
-      deserialize_from_file(DATA_STORE)
+    def [](index)
+      all.to_a[index]
     end
 
-    def save
-      serialize_to_file(DATA_STORE)
+    def size
+      all.to_a.size
+    end
+
+    def delete_at(index)
+      all.to_a.delete_at(index)
     end
   end
 end

@@ -20,20 +20,37 @@ PODS:
   - AFNetworking/UIKit (2.5.4):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
+  - CocoaLumberjack (1.6.5.1):
+    - CocoaLumberjack/Core (= 1.6.5.1)
+    - CocoaLumberjack/Extensions (= 1.6.5.1)
+  - CocoaLumberjack/Core (1.6.5.1)
+  - CocoaLumberjack/Extensions (1.6.5.1):
+    - CocoaLumberjack/Core
   - DBMapSelectorViewController (1.2.1)
   - FLKAutoLayout (0.2.1)
   - MBCalendarKit (3.0.4)
+  - NSData+MD5Digest (1.0.0)
+  - YapDatabase (2.6.5):
+    - YapDatabase/standard (= 2.6.5)
+  - YapDatabase/standard (2.6.5):
+    - CocoaLumberjack (~> 1)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.5)
+  - CocoaLumberjack (~> 1.6.5)
   - DBMapSelectorViewController (~> 1.2.0)
   - FLKAutoLayout (~> 0.2.1)
   - MBCalendarKit (~> 3.0.4)
+  - NSData+MD5Digest (~> 1.0.0)
+  - YapDatabase (~> 2.4)
 
 SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
+  CocoaLumberjack: 5e26ebef5a48962d1713ae6cb01da30384f3f14e
   DBMapSelectorViewController: b4b38dcd1ed10eba7b8b7a94d4376dd35bdbfce6
   FLKAutoLayout: 9db6b30c2008d230da608e62c607b11c23b942e6
   MBCalendarKit: 2a3a60f902162a03bb4957966a4b795af998211f
+  NSData+MD5Digest: 0743d53874455e2bdf49f70e7f815b0b963a355f
+  YapDatabase: 814f9ff862a95c1e581d93335a4020482b69155b
 
 COCOAPODS: 0.37.2

@@ -28,8 +28,6 @@ class EditLocationViewController < UITableViewController
     @locationCell.textLabel.text = 'Location'
     @locationCell.backgroundColor = '#88FFFFFF'.to_color
     @locationCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator
-
-    @location_controller = LocationsController.new($json_client)
  
     if @location
       @labelText.text = @location.label
@@ -103,8 +101,6 @@ class EditLocationViewController < UITableViewController
   end
 
   def save_location_and_close
-    NSLog('called')
-
     if @labelText.text.empty? # Use NSNotifcations or KVO instead
       @location.label = @locationCell.detailTextLabel.text
     else
@@ -112,15 +108,6 @@ class EditLocationViewController < UITableViewController
     end
 
     delegate.editLocationViewController(self, didEditLocation: @location)
-
-    @location.save!
-
-    if @location._id
-      @location_controller.update_location(@location)
-    else
-      @location_controller.add_location(@location)
-    end
-
     close
   end
 
@@ -133,7 +120,6 @@ class EditLocationViewController < UITableViewController
     if is_modal?
       dismissViewControllerAnimated(true, completion: nil)
     else
-
       navigationController.popViewControllerAnimated(true)
     end
   end

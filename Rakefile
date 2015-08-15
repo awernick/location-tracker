@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 $:.unshift('/Library/RubyMotion/lib')
 require 'motion/project/template/ios'
+require 'active_resource'
 require 'bubble-wrap'
 require 'bubble-wrap/ui'
 require 'bubble-wrap/core'
@@ -21,7 +22,7 @@ Motion::Project::App.setup do |app|
 
   # Enviornment variables
   # app.env['SERVER_ADDRESS'] = 'https://floating-coast-5593.herokuapp.com/api/v1'
-  # app.env['SERVER_ADDRESS'] = 'http://localhost:3000/api/v1'
+  app.env['SERVER_ADDRESS'] = 'http://localhost:3000/api/v1'
 
   # SDK 8 for iOS 8 and above
   # app.sdk_version = '8.2'
@@ -47,6 +48,7 @@ Motion::Project::App.setup do |app|
   app.interface_orientations = [:portrait, :landscape_left, :landscape_right, :portrait_upside_down]
 
   app.files += Dir.glob(File.join(app.project_dir, 'lib/**/*.rb'))
+  app.files += Dir.glob(File.join(app.project_dir, 'modules/**/*.rb'))
 
   # Use `rake config' to see complete project settings, here are some examples:
   #
