@@ -59,7 +59,7 @@ module RemoteRepository
         process_result(result, resource_params, &block)
       end
     end
-
+    
     def save(resource, &block)
       get(resource) do |remote_resource|
         if remote_resource.nil?
