@@ -11,20 +11,20 @@ class Location
   has_many :visits
 
   field :name,        type: :string
-  field :label,       type: :string
+  field :address,     type: :string
   field :latitude,    type: :float
   field :longitude,   type: :float
   field :radius,      type: :integer, :default => 25 
   
   def coordinate
-    [latitude, longitude]
+    latitude.nil? && longitude.nil? ? nil : [latitude, longitude]     
   end
 
   def to_h
     {
       id: id,
-      label: label,
       name: name,
+      address: address,
       radius: radius,
       latitude: latitude,
       longitude: longitude
@@ -33,6 +33,11 @@ class Location
 
   def ==(location)
     return latitude == location.latitude && longitude == location.longitude
+  end
+
+  def !=(location)
+    p "New Location #{location.latitude} #{location.longitude}"
+    return latitude != location.latitude || longitude != location.longitude
   end
 
   class << self

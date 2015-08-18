@@ -1,69 +1,31 @@
 module RemoteRepository
-  # attr_accessor :client
-  # attr_accessor :site
-  # attr_accessor :resource_name
-  # attr_reader   :path
-
-
-  # def initialize(params = {})
-  #   @client = params[:client]
-  #   @site   = params[:site]
-  #   @resource_name = params.fetch(:resource_name) { self.class.name.to_s.deconstantize }
-  #   @path = @resource_name.underscore.pluralize
-  # end
-
   def self.included(base)
-    base.class_eval do
+    base.extend(ClassMethods)
+    base.instance_eval do
       @resource_name = self.to_s.deconstantize 
       @path = @resource_name.underscore.pluralize
     end
-
-    base.extend(ClassMethods)
   end
 
   module ClassMethods
-    def resource_name
-      @resource_name
-    end
+    attr_accessor :resource_name
+    attr_accessor :path 
+    
+    attr_writer :client
+    attr_writer :site
 
-    def resource_name=(resource_name)
-      @resource_name = resource_name
+    def config
+      yield self if block_given?
     end
-
-    def path=(path)
-      @path = path
-    end
-
-    def path
-      @path
-    end
-
-    def site
-      raise ClientError, 'Missing site URI' unless defined? @site
-      @site
-    end
-
-    def site=(param)
-      @site = param
-    end
-
-    def client
-      raise ClientError, 'Missing valid client' unless defined? @client
-      @client
-    end
-
-    def client=(client)
-      @client = client
-    end
-
-    class ClientError < StandardError; end
 
     def all(&block)
       client.get("#{site}/#{path}") do |result|
         if result.error
           payload = []
         else
-          payload = result.object.map {|attrs| resource_name.constantize.new(normalize_result(attrs))}
+          payload = result.object.map do |attrs| 
+            resource_name.constantize.new(normalize_result(attrs))
+          end
         end
 
         block.call(payload) if block
@@ -116,11 +78,23 @@ module RemoteRepository
         end
       end
     end
+    
+    class ClientError < StandardError; end
+    
+    def site
+      raise ClientError, 'Missing site URI' unless defined? @site
+      @site
+    end
+
+    def client
+      raise ClientError, 'Missing valid client' unless defined? @client
+      @client
+    end
 
   private
     def process_result(result, resource_params, &block)
       if result.failure?
-        p result.error
+        $logger << result.error
       else
         resource_params.merge!(normalize_result(result.object))
       end

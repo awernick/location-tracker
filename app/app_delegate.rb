@@ -5,42 +5,55 @@ module LocationTracker
     def application(application, didFinishLaunchingWithOptions:launchOptions)
       application.registerUserNotificationSettings(UIUserNotificationSettings.settingsForTypes(UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound, categories:nil))
       @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
+      
+      # Initialize Logger
+      sink =  Device.simulator? ? Logger::StandardLogger.new : Logger::DeviceLogger.new
+      $logger = Logger.new(sink)
+      
+      # Config Remote DAOs
+      repo_config = {
+        site: ENV['SERVER_ADDRESS'],
+        client: AFMotion::JSON
+      }
+      
+      Location::Repository.config do |repo| 
+        repo.site   = repo_config[:site]
+        repo.client = repo_config[:client]
+      end
 
+      Visit::Repository.config do |repo|
+        repo.site   = repo_config[:site]
+        repo.client = repo_config[:client]
+      end
+      
+      # Start root view controller
       location_controller = LocationsTableViewController.new
       @location_manager = location_controller.location_manager
-      p 'hey'
-      @window.rootViewController = UINavigationController.alloc.initWithRootViewController(location_controller)
+      
+      @window.rootViewController = UINavigationController.alloc.
+                                     initWithRootViewController(location_controller)
+
       @window.makeKeyAndVisible
 
       true
     end
 
-    # # Remove this if you are only supporting portrait
-    # def application(application, willChangeStatusBarOrientation: new_orientation, duration: duration)
-    #   # Manually set RMQ's orientation before the device is actually oriented
-    #   # So that we can do stuff like style views before the rotation begins
-    #   rmq.device.orientation = new_orientation
-    # end
-
     def applicationWillEnterForeground(application)
-
     end
 
     def applicationDidEnterBackground(application)
       if CLLocationManager.significantLocationChangeMonitoringAvailable
-        p 'significant location monitoring started'
-        NSLog('significant location monitoring started')
+        $logger << 'significant location monitoring started'
 
     		@location_manager.stopUpdatingLocation
     		@location_manager.startMonitoringSignificantLocationChanges
     	else
-    		NSLog("Significant location change monitoring is not available.")
+    		$logger << "Significant location change monitoring is not available."
     	end
     end
 
     def applicationDidBecomeActive(application)
-      p 'became active'
-      NSLog('Became active')
+      $logger << 'became active'
 
       if CLLocationManager.significantLocationChangeMonitoringAvailable
         @location_manager.stopMonitoringSignificantLocationChanges

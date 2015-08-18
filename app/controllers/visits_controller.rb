@@ -19,7 +19,7 @@ class VisitsController
       visit.reload
 
       Visit::Repository.save(visit) do |remote_visit|
-        if visit.id != remote_visit && Visit.find(visit.id)
+        if visit.id != remote_visit.id && Visit.find(visit.id)
           visit.destroy
         end
 

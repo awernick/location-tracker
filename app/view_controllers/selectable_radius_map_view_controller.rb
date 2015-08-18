@@ -20,42 +20,25 @@ class SelectableRadiusMapViewController < UIViewController
     selector_manager.strokeColor = UIColor.redColor
     selector_manager.applySelectorSettings
     selector_manager.delegate = self
+    notify_radius_change(25)
 
     self.radius = selector_manager.circleRadius
     self.view = map_view
   end
 
-  # def update_location_marker(coordinate)
-  #   @location = map_view.annotations.last || Annotation.new
-  #   @location.coordinate = coordinate
-
-  #   selector_manager.circleCoordinate = coordinate
-
-  #   snap_to_coordinate(coordinate)
-  # end
-
-  def snap_to(coordinate)
+  def snap_to(coordinate, radius = 25)
     # Update annotations coordinate
     @location = map_view.annotations.last || Annotation.new
     @location.coordinate = coordinate
 
     # Update radius selector's location
     selector_manager.circleCoordinate = coordinate
+    selector_manager.circleRadius = radius
 
     # Zoom into coordinate
     region = MKCoordinateRegionMakeWithDistance(coordinate, 20.0, 20.0);
     map_view.setRegion region, animated: true
   end
-
-  # def snap_to_user_location
-  #   BW::Location.get_once(purpose: 'Center map on user location') do |result|
-  #     if result.is_a? CLLocation
-  #       snap_to_coordinate(result.coordinate)
-  #     else
-  #       p result[:error]
-  #     end
-  #   end
-  # end
 
   #### MKMapViewDelegate
 
@@ -83,15 +66,17 @@ class SelectableRadiusMapViewController < UIViewController
   #### DBMapSelectorManagerDelegate 
 
   def mapSelectorManager(mapSelectorManager, didChangeRadius: radius)
-    p radius
-    unless delegate.nil?
-      delegate.selectableRadiusMapViewController self, didChangeRadius: radius
-    end
-    # p self.radius
+    notify_radius_change(radius)
   end
 
   def mapSelectorManager(mapSelectorManager, didChangeCoordinate: coordinate)
     delegate.selectableRadiusMapViewController self, didChangeCoordinate: coordinate
+  end
+
+  def notify_radius_change(radius)
+    unless delegate.nil?
+      delegate.selectableRadiusMapViewController self, didChangeRadius: radius
+    end
   end
 
 protected

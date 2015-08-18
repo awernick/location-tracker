@@ -44,7 +44,7 @@ class SearchableLocationTableViewController < UIViewController
     request = MKLocalSearchRequest.new
     request.naturalLanguageQuery = search_text
     search = MKLocalSearch.alloc.initWithRequest(request)
-    search.startWithCompletionHandler lambda { |response, error|
+    search.startWithCompletionHandler ->(response, error) {
 
       unless response.nil? 
         locations << response.mapItems

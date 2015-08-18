@@ -5,6 +5,13 @@ class SelectLocationViewController < UIViewController
   attr_accessor :locations
   attr_accessor :delegate
 
+  def initWithLocation(location)
+    @location = location
+
+    init
+    self
+  end
+
   def loadView
     super
 
@@ -60,7 +67,11 @@ class SelectLocationViewController < UIViewController
 
     addChildViewController(map_view_controller)
     map_view_controller.didMoveToParentViewController self
-    # map_view_controller.snap_to_user_location
+
+    unless @location.nil?
+      map_view_controller.snap_to(@location.coordinate, @location.radius)
+      @location = nil
+    end
   end
 
   def init_location_manager
@@ -68,7 +79,7 @@ class SelectLocationViewController < UIViewController
     @location_manager.delegate = self
     @location_manager.distanceFilter = KCLDistanceFilterNone
     @location_manager.desiredAccuracy = KCLLocationAccuracyBest
-    update_location_to_current
+    # update_location_to_current
   end
 
   def locationManager(manager, didUpdateToLocation: new_location, fromLocation: old_location)
@@ -122,13 +133,11 @@ class SelectLocationViewController < UIViewController
         placemark = placemarks.first
       end
 
-      NSLog(coordinate.coordinate.latitude.to_s)
-      NSLog(coordinate.coordinate.longitude.to_s)
+      $logger << 'Updating location'
+      $logger << "Lat: #{coordinate.coordinate.latitude}"
+      $logger << "Long: #{coordinate.coordinate.longitude}"
 
       @location = MKMapItem.alloc.initWithPlacemark(placemark)
-
-      NSLog(@location.placemark.coordinate.latitude.to_s)
-      NSLog(@location.placemark.coordinate.longitude.to_s)
 
       map_view_controller.snap_to(@location.placemark.coordinate)
       notify_location_selected
@@ -142,7 +151,6 @@ class SelectLocationViewController < UIViewController
   end
 
 private
-
   def location=(location)
     if location.isCurrentLocation
       update_location_to_current

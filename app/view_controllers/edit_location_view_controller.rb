@@ -1,7 +1,7 @@
 class EditLocationViewController < UITableViewController
   attr_accessor :delegate
   
-  SECTIONS = {label: 0, location: 1}
+  SECTIONS = {name: 0, location: 1}
 
   def initWithLocation(location)
     @location = location
@@ -14,12 +14,12 @@ class EditLocationViewController < UITableViewController
 
     init_navbar
 
-    # Setup label
-    @labelCell = UITableViewCell.new
-    @labelCell.backgroundColor = '#88FFFFFF'.to_color
-    @labelText = UITextField.alloc.initWithFrame CGRectInset(@labelCell.contentView.bounds, 15, 0)
-    @labelText.placeholder = 'First Name'
-    @labelCell.addSubview(@labelText)
+    # Setup name
+    @nameCell = UITableViewCell.new
+    @nameCell.backgroundColor = '#88FFFFFF'.to_color
+    @nameText = UITextField.alloc.initWithFrame CGRectInset(@nameCell.contentView.bounds, 15, 0)
+    @nameText.placeholder = 'Name'
+    @nameCell.addSubview(@nameText)
 
     # Setup location selector
     @locationCell = UITableViewCell.alloc.initWithStyle UITableViewCellStyleSubtitle, 
@@ -30,8 +30,8 @@ class EditLocationViewController < UITableViewController
     @locationCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator
  
     if @location
-      @labelText.text = @location.label
-      @locationCell.detailTextLabel.text = @location.name
+      @nameText.text = @location.name
+      @locationCell.detailTextLabel.text = @location.address
     else
       @location = Location.new
     end
@@ -67,8 +67,8 @@ class EditLocationViewController < UITableViewController
 
   def tableView(table_view, cellForRowAtIndexPath: index_path)
     case index_path.section
-    when SECTIONS[:label]
-      return @labelCell
+    when SECTIONS[:name]
+      return @nameCell
     when SECTIONS[:location]
       return @locationCell
     end
@@ -80,7 +80,11 @@ class EditLocationViewController < UITableViewController
 
   def tableView(table_view, didSelectRowAtIndexPath: index_path)
     if index_path.section == SECTIONS[:location]
-      select_location_controller = SelectLocationViewController.alloc.init
+      if @location.coordinate.nil?
+        select_location_controller = SelectLocationViewController.alloc.init
+      else
+        select_location_controller = SelectLocationViewController.alloc.initWithLocation(@location)
+      end
       select_location_controller.delegate = self
       navigationController.pushViewController select_location_controller, animated: true
     end
@@ -88,7 +92,7 @@ class EditLocationViewController < UITableViewController
 
   def selectLocationViewController(controller, didSelectLocation: location)
     @location.tap do |tracked_location|
-      tracked_location.name = location.name
+      tracked_location.address = location.name
       tracked_location.longitude = location.placemark.coordinate.longitude
       tracked_location.latitude = location.placemark.coordinate.latitude
     end
@@ -101,10 +105,10 @@ class EditLocationViewController < UITableViewController
   end
 
   def save_location_and_close
-    if @labelText.text.empty? # Use NSNotifcations or KVO instead
-      @location.label = @locationCell.detailTextLabel.text
+    if @nameText.text.empty? # Use NSNotifcations or KVO instead
+      @location.name = @locationCell.detailTextLabel.text
     else
-      @location.label = @labelText.text
+      @location.name = @nameText.text
     end
 
     delegate.editLocationViewController(self, didEditLocation: @location)

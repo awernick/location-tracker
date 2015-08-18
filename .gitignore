@@ -1,4 +1,5 @@
 .repl_history
+build/**/*
 build
 tags
 app/pixate_code.rb
@@ -6,6 +7,8 @@ resources/*.nib
 resources/*.momd
 resources/*.storyboardc
 vendor/Pods
+vendor
+tags
 .DS_Store
 nbproject
 .redcar

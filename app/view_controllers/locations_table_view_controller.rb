@@ -3,20 +3,9 @@ class LocationsTableViewController < UIViewController
 
   def init
     super
-
-    repo_config = {
-      site: ENV['SERVER_ADDRESS'],
-      client: AFMotion::JSON
-    }
-
+   
     @locations_repository = Location::Repository
     @visits_repository = Visit::Repository
-
-    @locations_repository.site = repo_config[:site]
-    @locations_repository.client = repo_config[:client]
-
-    @visits_repository.site = repo_config[:site]
-    @visits_repository.client = repo_config[:client]
 
     Location.all.each do |location|
       @locations_repository.save(location)
@@ -28,6 +17,9 @@ class LocationsTableViewController < UIViewController
           # Visit::Repository.delete(visit)
           visit.destroy
         end
+        
+        visit.update_attributes(remote_visit.to_h)
+        visit.save
       end
     end
 
@@ -36,10 +28,14 @@ class LocationsTableViewController < UIViewController
     init_nav
     init_table
     
+    @location_manager_delegate = LocationManagerDelegate.new
 
     # Load all locations
     @locations_repository.all do |locations|
-      locations.each(&:save)
+      locations.each do |location|
+        location.save
+        @location_manager_delegate.register_location(location)
+      end
       table_view.reloadData
     end
 
@@ -47,8 +43,6 @@ class LocationsTableViewController < UIViewController
     @visits_repository.all do |visits|
       visits.each(&:save)
     end
-
-    @location_manager_delegate = LocationManagerDelegate.new
     
     self
   end
@@ -100,7 +94,7 @@ class LocationsTableViewController < UIViewController
       reuseIdentifier: @identifier)
 
     cell.tap do |cell|
-      cell.textLabel.text = @data[indexPath.row].label
+      cell.textLabel.text = @data[indexPath.row].name
       # cell.rightUtilityButtons = right_buttons
     end
   end
