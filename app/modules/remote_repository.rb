@@ -10,7 +10,8 @@ module RemoteRepository
   module ClassMethods
     attr_accessor :resource_name
     attr_accessor :path 
-    
+
+    attr_writer :primary_key
     attr_writer :client
     attr_writer :site
 
@@ -91,6 +92,10 @@ module RemoteRepository
       @client
     end
 
+    def primary_key
+      @primary_key || '_id'
+    end
+
   private
     def process_result(result, resource_params, &block)
       if result.failure?
@@ -104,7 +109,7 @@ module RemoteRepository
     end
 
     def normalize_result(params)
-      params['id'] = params['_id']
+      params['id'] = params[primary_key]
       params.select! {|k,v| resource_name.constantize.method_defined?(k) && !v.nil?}
     end
   end
