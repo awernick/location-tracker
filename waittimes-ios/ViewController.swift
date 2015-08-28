@@ -10,7 +10,7 @@ import UIKit
 import SwiftyJSON
 import Mapbox
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, MGLMapViewDelegate {
   
   var mapView: MGLMapView!
 
@@ -18,8 +18,12 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
       super.viewDidLoad()
       
+      
       mapView = MGLMapView(frame: view.bounds)
+      
       mapView.autoresizingMask = .FlexibleWidth | .FlexibleHeight
+      mapView.userTrackingMode = .Follow
+      mapView.delegate = self
       
       
       let url = NSURL(string: "http://192.168.31.152/api/v1/bridges")
@@ -31,7 +35,17 @@ class ViewController: UIViewController {
         let json = JSON(data: data)
         var mapLong = json["bridges"][0]["location"][0].double!
         var mapLat = json["bridges"][0]["location"][1].double!
+        var bridgeName = json["bridges"][0]["name"].stringValue
+        var bridgeNumber = json["bridges"][0]["bridge_number"].stringValue
         self.mapView.setCenterCoordinate(CLLocationCoordinate2D(latitude: mapLat, longitude: mapLong), zoomLevel: 15, animated: true)
+        
+        let hello = MGLPointAnnotation()
+        hello.coordinate = CLLocationCoordinate2D(latitude: mapLat, longitude: mapLong)
+        hello.title = bridgeName
+        hello.subtitle = bridgeNumber
+        
+        self.mapView.addAnnotation(hello)
+        
         
         
         
@@ -40,8 +54,27 @@ class ViewController: UIViewController {
         
       })
       
+      
       task.resume()
+      
     }
+  
+  func mapView(mapView: MGLMapView, annotationCanShowCallout annotation: MGLAnnotation) -> Bool {
+    return true
+  }
+  
+  override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    
+//    Delcare annotation point and set its coordinates, title, and subtitles.
+    
+//    let point = MGLPointAnnotation()
+//    point.coordinate = CLLocationCoordinate2DMake(31.889655855870153 , -106.99258804321289)
+//    point.title = "Bridge of the Americas"
+//    point.subtitle = "The first bridge of waittimes"
+//    
+//    self.mapView.addAnnotation(point)
+  }
   
 
     override func didReceiveMemoryWarning() {

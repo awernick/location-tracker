@@ -200,6 +200,11 @@
 					DFDD34691B8FF2CA00FDB5A2 = {
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = STYYEB66G5;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					DFDD347E1B8FF2CB00FDB5A2 = {
 						CreatedOnToolsVersion = 6.4;
