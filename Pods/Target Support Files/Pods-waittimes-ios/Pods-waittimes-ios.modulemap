@@ -1,0 +1,6 @@
+framework module Pods_waittimes_ios {
+  umbrella header "Pods-waittimes-ios-umbrella.h"
+
+  export *
+  module * { export * }
+}
