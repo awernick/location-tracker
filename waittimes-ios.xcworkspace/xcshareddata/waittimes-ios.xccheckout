@@ -10,14 +10,14 @@
 	<string>waittimes-ios</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>27CEB97FA3E8966954EB8CDB9238ADE2ACF1D0B9</key>
+		<key>B617AFBE8BA78F28D6D9C5748729FFB8371D06D0</key>
 		<string>github.com:gavargas22/waittimes-ios.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>waittimes-ios.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>27CEB97FA3E8966954EB8CDB9238ADE2ACF1D0B9</key>
+		<key>B617AFBE8BA78F28D6D9C5748729FFB8371D06D0</key>
 		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
@@ -25,14 +25,14 @@
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>27CEB97FA3E8966954EB8CDB9238ADE2ACF1D0B9</string>
+	<string>B617AFBE8BA78F28D6D9C5748729FFB8371D06D0</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>27CEB97FA3E8966954EB8CDB9238ADE2ACF1D0B9</string>
+			<string>B617AFBE8BA78F28D6D9C5748729FFB8371D06D0</string>
 			<key>IDESourceControlWCCName</key>
 			<string>waittimes-ios</string>
 		</dict>

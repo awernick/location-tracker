@@ -26,30 +26,30 @@ class ViewController: UIViewController, MGLMapViewDelegate {
       mapView.delegate = self
       
       
-      let url = NSURL(string: "http://192.168.31.152/api/v1/bridges")
-//      let url = NSURL(string: "http://waittimes.io/api/v1/bridges")
+//      let url = NSURL(string: "http://192.168.31.152/api/v1/bridges")
+      let url = NSURL(string: "http://waittimes.io/api/v1/bridges")
       let session = NSURLSession.sharedSession()
       
       let task = session.dataTaskWithURL(url!, completionHandler: { (data, response, error)in
-        
-        let json = JSON(data: data)
-        var mapLong = json["bridges"][0]["location"][0].double!
-        var mapLat = json["bridges"][0]["location"][1].double!
-        var bridgeName = json["bridges"][0]["name"].stringValue
-        var bridgeNumber = json["bridges"][0]["bridge_number"].stringValue
-        self.mapView.setCenterCoordinate(CLLocationCoordinate2D(latitude: mapLat, longitude: mapLong), zoomLevel: 15, animated: true)
-        
-        let hello = MGLPointAnnotation()
-        hello.coordinate = CLLocationCoordinate2D(latitude: mapLat, longitude: mapLong)
-        hello.title = bridgeName
-        hello.subtitle = bridgeNumber
-        
-        self.mapView.addAnnotation(hello)
-        
-        
-        
-        
-        self.view.addSubview(self.mapView)
+      
+      let json = JSON(data: data)
+      var mapLong = json["bridges"][0]["location"][0].double!
+      var mapLat = json["bridges"][0]["location"][1].double!
+      var bridgeName = json["bridges"][0]["name"].stringValue
+      var bridgeNumber = json["bridges"][0]["bridge_number"].stringValue
+      self.mapView.setCenterCoordinate(CLLocationCoordinate2D(latitude: mapLat, longitude: mapLong), zoomLevel: 15, animated: true)
+      
+      let hello = MGLPointAnnotation()
+      hello.coordinate = CLLocationCoordinate2D(latitude: mapLat, longitude: mapLong)
+      hello.title = bridgeName
+      hello.subtitle = bridgeNumber
+      
+      self.mapView.addAnnotation(hello)
+      
+      
+      
+      
+      self.view.addSubview(self.mapView)
         
         
       })
