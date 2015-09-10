@@ -4,6 +4,7 @@ use_frameworks!
 
 target 'waittimes-ios' do
   pod 'SwiftyJSON', '~> 2.2.1'
+	pod 'MagicalRecord'
   pod 'Mapbox-iOS-SDK'
   pod 'SQLite.swift', git: 'https://github.com/stephencelis/SQLite.swift.git'
 end

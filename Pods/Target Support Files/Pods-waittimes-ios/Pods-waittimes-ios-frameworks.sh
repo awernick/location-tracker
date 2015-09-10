@@ -52,10 +52,14 @@ code_sign_if_enabled() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework 'Pods-waittimes-ios/MagicalRecord.framework'
   install_framework 'Pods-waittimes-ios/Mapbox.framework'
+  install_framework 'Pods-waittimes-ios/SQLite.framework'
   install_framework 'Pods-waittimes-ios/SwiftyJSON.framework'
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework 'Pods-waittimes-ios/MagicalRecord.framework'
   install_framework 'Pods-waittimes-ios/Mapbox.framework'
+  install_framework 'Pods-waittimes-ios/SQLite.framework'
   install_framework 'Pods-waittimes-ios/SwiftyJSON.framework'
 fi

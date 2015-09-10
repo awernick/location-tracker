@@ -12,7 +12,8 @@ import Mapbox
 
 class ViewController: UIViewController, MGLMapViewDelegate {
   
-  var mapView: MGLMapView!
+    var mapView: MGLMapView!
+    var bridge: BridgePreview
 
     
     override func viewDidLoad() {
@@ -26,14 +27,14 @@ class ViewController: UIViewController, MGLMapViewDelegate {
       mapView.delegate = self
       
       
-//      let url = NSURL(string: "http://192.168.31.152/api/v1/bridges")
-      let url = NSURL(string: "http://waittimes.io/api/v1/bridges")
+        //      let url = NSURL(string: "http://dev.waittimes.io:8080/api/v1/bridges")
+      let url = NSURL(string: "http://dev.waittimes.io:8080/api/v1/bridges")
       let session = NSURLSession.sharedSession()
       
       let task = session.dataTaskWithURL(url!, completionHandler: { (data, response, error)in
       
       let json = JSON(data: data)
-      var mapLong = json["bridges"][0]["location"][0].double!
+      var mapLong = json[0]["location"][0].double!
       var mapLat = json["bridges"][0]["location"][1].double!
       var bridgeName = json["bridges"][0]["name"].stringValue
       var bridgeNumber = json["bridges"][0]["bridge_number"].stringValue
