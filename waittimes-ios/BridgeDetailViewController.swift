@@ -49,9 +49,11 @@ class BridgeDetailViewController: UIViewController, MGLMapViewDelegate {
         
         //add map as subview of this controllers view
         self.bottomView.addSubview(self.mapView)
+        
+        
     }
-    
     func mapView(mapView: MGLMapView, annotationCanShowCallout annotation: MGLAnnotation) -> Bool {
+        
         return true
     }
     /**
@@ -63,19 +65,22 @@ class BridgeDetailViewController: UIViewController, MGLMapViewDelegate {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
+        NSLog("MapView - annotation can now show!")
         //setup the center coordinate
         self.mapView.setCenterCoordinate(
             CLLocationCoordinate2D(latitude: bridge.latitudeDouble(), longitude: bridge.longitudeDouble()),
             zoomLevel: 15,
             animated: true
         )
+        
         //add marker
         let point = MGLPointAnnotation()
         point.coordinate = CLLocationCoordinate2D(latitude: bridge.latitudeDouble(), longitude: bridge.longitudeDouble())
         point.title = self.bridge.nameString()
         point.subtitle = self.bridge.bridgeNumberString_()
         self.mapView.addAnnotation(point)
-
+        
+        //add graphical geofences
     }
     /**
     * setGeofenceInformation

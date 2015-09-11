@@ -7,6 +7,7 @@ public class Geofence: _Geofence {
     func updateWithJSON(bridge: Bridge!, json: JSON){
         self.longitude = json["longitud"].numberValue
         self.latitude = json["latitude"].numberValue
+        self.radius = json["radius"].numberValue
         self.bridge = bridge
     }
     /**
@@ -21,6 +22,7 @@ public class Geofence: _Geofence {
         fence.name = json["name"].stringValue
         fence.longitude = json["longitude"].numberValue
         fence.latitude = json["latitude"].numberValue
+        fence.radius = json["radius"].numberValue
         fence.bridge = bridge
         return fence
     }
