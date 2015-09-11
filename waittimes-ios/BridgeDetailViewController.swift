@@ -18,11 +18,14 @@ class BridgeDetailViewController: UIViewController, MGLMapViewDelegate {
     
     var mapView: MGLMapView!
     var bridge: Bridge!
+    var id: NSNumber = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         //set title
-        bridgeNameLabel.text = bridge.name
+        self.bridge = Bridge.findWithID(self.id)
+        println("loaded bridge \(bridge)")
+        bridgeNameLabel.text = bridge.getName()
         bridgeNumberLabel.text = bridge.bridgeNumber()
         
         //setup the mapview
@@ -56,7 +59,7 @@ class BridgeDetailViewController: UIViewController, MGLMapViewDelegate {
         //add marker
         let point = MGLPointAnnotation()
         point.coordinate = CLLocationCoordinate2D(latitude: bridge.latitudeDouble(), longitude: bridge.longitudeDouble())
-        point.title = self.bridge.name
+        point.title = self.bridge.getName()
         point.subtitle = self.bridge.bridgeNumber()
         self.mapView.addAnnotation(point)
     }
@@ -67,6 +70,6 @@ class BridgeDetailViewController: UIViewController, MGLMapViewDelegate {
     * be called with the uibutton as sender.
     */
     @IBAction func loadGeofencesClicked(sender: AnyObject) {
-        NSLog("load geofences for bridge with id=%@", bridge.bridge_number!)
+        NSLog("load geofences for bridge with id=%@", bridge.bridgeNumber())
     }
 }

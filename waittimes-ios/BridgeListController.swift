@@ -11,35 +11,40 @@ import MagicalRecord
 import UIKit
 
 class BridgeListController: UITableViewController, UITableViewDataSource, UITableViewDelegate {
-    var url = NSURL(string: "http://dev.waittimes.io:8080/api/v1/bridges")
     var loading = false
     var bridges: Array<Bridge> = []
-    var session: NSURLSession = NSURLSession.sharedSession()
-    
+    /**
+    * getBridges
+    *
+    * Gets the bridges from the server and sets the appropriate 
+    * variables in the view controller for the table like loading,
+    * bridges, and reloads table view
+    *
+    */
     func getBridges(){
         self.loading = true
-        self.session.dataTaskWithURL(self.url!, completionHandler: {
-                (data, response, errors) -> Void in
-                    let json = JSON(data: data)
-                    var bridgesJSON = json.arrayValue
-                    self.bridges.removeAll(keepCapacity: true)
-                    for bridgeJSON in bridgesJSON {
-                        self.bridges.append(Bridge.createWithJSON(bridgeJSON))
-                    }
-                    self.loading = false
-//                   Faults .MR_defaultContext().saveToPersistentStoreAndWait()
-                    self.tableView.reloadData()
-            }
-        ).resume()
+        Bridge.GetAllBridges(bridgeReceiver: {
+            (bridgeArray: [Bridge]) -> Void in
+                self.bridges = bridgeArray
+                self.loading = false
+                self.tableView.reloadData()
+        })
     }
     
-    //Prepare for select action
+    /**
+    * prepareForSegue
+    *
+    * Whenever any of the tables rows are clicked this method will be
+    * called and it will get the index of the row that was clicked so
+    * that we may send the object to the bridge detail view controller.
+    *
+    */
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         println("preparing to change view with \(segue.identifier)")
         let bdController = segue.destinationViewController as? BridgeDetailViewController
         if let index = self.tableView.indexPathForSelectedRow() {
             let row = index.row
-            bdController!.bridge = self.bridges[row]
+            bdController!.id = self.bridges[row].getID()
         }
     }
     
@@ -68,13 +73,18 @@ class BridgeListController: UITableViewController, UITableViewDataSource, UITabl
         // Return the number of sections.
         return 1
     }
-
-
+    /**
+    * tableView
+    *
+    * Gets the bridge for the given index and sets the title of
+    * a cell that is allocated and returned to the table view.
+    *
+    */
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("bridgePreviewCell", forIndexPath: indexPath) as! UITableViewCell
-        // Configure the cell...
+        // Configure the cell
         if indexPath.row < self.bridges.count {
-            cell.textLabel?.text = self.bridges[indexPath.row].name
+            cell.textLabel?.text = self.bridges[indexPath.row].getName()
         }
         return cell
     }
