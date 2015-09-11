@@ -8,14 +8,14 @@ public class Bridge: _Bridge {
     /**
     * Instance Functions
     */
-    func getID() -> NSNumber {
+    func idNumber() -> NSNumber {
         return self.valueForKey("id") as! NSNumber
     }
-    func getName() -> String {
+    func nameString() -> String {
         return self.valueForKey("name") as! String
     }
-    func bridgeNumber() -> String {
-        return self.valueForKey("bridge_number") as! String
+    func bridgeNumberString_() -> String {
+        return self.valueForKey("bridge_number")!.stringValue!
     }
     
     func longitudeDouble() -> Double {
@@ -24,6 +24,32 @@ public class Bridge: _Bridge {
     
     func latitudeDouble() -> Double {
         return Double(self.valueForKey("latitude") as! NSNumber)
+    }
+    func numberOfFences() -> Int {
+        return (self.valueForKey("fences") as! NSSet).count
+    }
+    
+    func track(track: Bool) {
+        self.setValue(track, forKey: "tracking")
+        self.store()
+    }
+    
+    func track() -> Bool {
+        return (self.valueForKey("tracking") as! Bool)
+    }
+    
+    func fencesSet() -> NSSet {
+        return (self.valueForKey("fences") as! NSSet)
+    }
+    /**
+    * store
+    *
+    * It stores the object in the persisten store using the default
+    * context in which this object was created. Usually the context or
+    * thread from which this should be called is the Main thread.
+    */
+    func store(){
+        NSManagedObjectContext.MR_defaultContext().MR_saveToPersistentStoreAndWait()
     }
     /**
     * updateExceptUnchangeables
@@ -39,10 +65,11 @@ public class Bridge: _Bridge {
         self.latitude = json["latitude"].numberValue
         var fences = NSMutableSet()
         for fence in json["fences"].arrayValue {
-            var fence = Geofence.createWithJSON(fence)
+            var fence = Geofence.findAndUpdateChangeablesOrCreateWithJSON(self, json: fence)
             fences.addObject(fence)
         }
         self.addFences(fences)
+        NSManagedObjectContext.MR_defaultContext().MR_saveToPersistentStoreAndWait()
     }
     /**
     * Class Functions
@@ -100,7 +127,7 @@ public class Bridge: _Bridge {
                     let json = JSON(data: data)
                     dispatch_async(dispatch_get_main_queue(), {
                         for bridgeJSON in json.arrayValue {
-                            bridges.append(Bridge.findAndUpdateChangeablesOrCreateWithJSON(json))
+                            bridges.append(Bridge.findAndUpdateChangeablesOrCreateWithJSON(bridgeJSON))
                         }
                         bridgeReceiver(bridges)
                     })

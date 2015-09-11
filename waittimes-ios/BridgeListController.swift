@@ -44,7 +44,7 @@ class BridgeListController: UITableViewController, UITableViewDataSource, UITabl
         let bdController = segue.destinationViewController as? BridgeDetailViewController
         if let index = self.tableView.indexPathForSelectedRow() {
             let row = index.row
-            bdController!.id = self.bridges[row].getID()
+            bdController!.id = self.bridges[row].idNumber()
         }
     }
     
@@ -84,7 +84,7 @@ class BridgeListController: UITableViewController, UITableViewDataSource, UITabl
         let cell = tableView.dequeueReusableCellWithIdentifier("bridgePreviewCell", forIndexPath: indexPath) as! UITableViewCell
         // Configure the cell
         if indexPath.row < self.bridges.count {
-            cell.textLabel?.text = self.bridges[indexPath.row].getName()
+            cell.textLabel?.text = self.bridges[indexPath.row].nameString()
         }
         return cell
     }
