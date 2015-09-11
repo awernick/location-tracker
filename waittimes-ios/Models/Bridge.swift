@@ -31,7 +31,7 @@ public class Bridge: _Bridge {
     * updates the attributes of the bridge except those that need to be
     * keep persistenly the same
     */
-    func updateExceptUnchangeables(json: JSON, context: NSManagedObjectContext){
+    func updateExceptUnchangeables(json: JSON){
         self.id = json["id"].numberValue
         self.name = json["name"].stringValue
         self.bridge_number = json["bridge_number"].numberValue
@@ -39,7 +39,7 @@ public class Bridge: _Bridge {
         self.latitude = json["latitude"].numberValue
         var fences = NSMutableSet()
         for fence in json["fences"].arrayValue {
-            var fence = Geofence.createWithJSON(fence, context: context)
+            var fence = Geofence.createWithJSON(fence)
             fences.addObject(fence)
         }
         self.addFences(fences)
@@ -47,15 +47,12 @@ public class Bridge: _Bridge {
     /**
     * Class Functions
     */
-    class func createWithJSON(json: JSON) -> Bridge{
-        return Bridge.createWithJSON(json, context: NSManagedObjectContext.MR_context())
-    }
-    class func createWithJSON(json: JSON, context: NSManagedObjectContext) -> Bridge {
+    class func createWithJSON(json: JSON) -> Bridge {
         var bridge: Bridge
-        bridge = Bridge.MR_createEntityInContext(context)
-        bridge.updateExceptUnchangeables(json, context: context)
+        bridge = Bridge.MR_createEntity()
+        bridge.updateExceptUnchangeables(json)
         bridge.tracking = false
-        context.MR_saveToPersistentStoreAndWait()
+        NSManagedObjectContext.MR_defaultContext().MR_saveToPersistentStoreAndWait()
         return bridge
     }
     /**
@@ -74,14 +71,14 @@ public class Bridge: _Bridge {
     * will be updated, else the bridge will be created and stored in the
     * persistent store.
     */
-    class func findAndUpdateChangeablesOrCreateWithJSON(json: JSON, context: NSManagedObjectContext) -> Bridge {
+    class func findAndUpdateChangeablesOrCreateWithJSON(json: JSON) -> Bridge {
         var bridge: Bridge? = Bridge.findWithID(json["id"].numberValue)
         if let isBridge = bridge {
             //the bridge is not nil so update the some attributes
-            bridge?.updateExceptUnchangeables(json, context: context)
+            bridge?.updateExceptUnchangeables(json)
             return bridge!
         }
-        return Bridge.createWithJSON(json, context: context)
+        return Bridge.createWithJSON(json)
     }
     /**
     * REST Methods
@@ -94,20 +91,20 @@ public class Bridge: _Bridge {
     * Gets all the bridges from server in json format and calls the given
     * closure with an array of the pertaining bridges.
     */
-    class func GetAllBridges(#bridgeReceiver: ([Bridge] -> Void)) -> NSManagedObjectContext {
-        var context = NSManagedObjectContext.MR_context()
+    class func GetAllBridges(#bridgeReceiver: ([Bridge] -> Void)) -> Void {
         var bridges = [Bridge]()
         Bridge.session.dataTaskWithURL(
             Bridge.bridgesURL!,
             completionHandler: {
                 (data, response, errors) -> Void in
                     let json = JSON(data: data)
-                    for bridgeJSON in json.arrayValue {
-                        bridges.append(Bridge.createWithJSON(bridgeJSON, context: context))
-                    }
-                bridgeReceiver(bridges)
+                    dispatch_async(dispatch_get_main_queue(), {
+                        for bridgeJSON in json.arrayValue {
+                            bridges.append(Bridge.findAndUpdateChangeablesOrCreateWithJSON(json))
+                        }
+                        bridgeReceiver(bridges)
+                    })
             }
         ).resume()
-        return context
     }
 }
