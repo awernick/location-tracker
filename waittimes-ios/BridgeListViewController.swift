@@ -10,7 +10,7 @@ import SwiftyJSON
 import MagicalRecord
 import UIKit
 
-class BridgeListController: UITableViewController, UITableViewDataSource, UITableViewDelegate {
+class BridgeListViewController: UITableViewController, UITableViewDataSource, UITableViewDelegate {
     var loading = false
     var bridges: Array<Bridge> = []
     /**

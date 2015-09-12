@@ -22,6 +22,8 @@ class BridgeDetailViewController: UIViewController, MGLMapViewDelegate {
     var mapView: MGLMapView!
     var bridge: Bridge!
     var id: NSNumber = 0
+    let geofenceController = GeofenceController()
+    
     /**
     * viewDidLoad
     *
@@ -49,9 +51,8 @@ class BridgeDetailViewController: UIViewController, MGLMapViewDelegate {
         
         //add map as subview of this controllers view
         self.bottomView.addSubview(self.mapView)
-        
-        
     }
+    
     func mapView(mapView: MGLMapView, annotationCanShowCallout annotation: MGLAnnotation) -> Bool {
         
         return true
@@ -118,12 +119,14 @@ class BridgeDetailViewController: UIViewController, MGLMapViewDelegate {
             if !bridge.track() {
                 NSLog("Not tracking bridge[%@] anymore", bridge.bridgeNumberString_())
                 self.setGeofenceInformation(true)
+                geofenceController.track(bridge)
                 bridge.track(true)
             }
         }else{
             if bridge.track(){
                 NSLog("Tracking bridge[%@]", bridge.bridgeNumberString_())
                 self.setGeofenceInformation(false)
+                geofenceController.remove(bridge)
                 bridge.track(false)
             }
         }

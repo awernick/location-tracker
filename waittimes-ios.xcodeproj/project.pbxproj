@@ -11,12 +11,13 @@
 		2A8366241BA0D19D00C1D2DB /* _Geofence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8366201BA0D19D00C1D2DB /* _Geofence.swift */; };
 		2A8366251BA0D19D00C1D2DB /* Bridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8366211BA0D19D00C1D2DB /* Bridge.swift */; };
 		2A8366261BA0D19D00C1D2DB /* Geofence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8366221BA0D19D00C1D2DB /* Geofence.swift */; };
-		2AAA97511B99128E001E493F /* BridgeListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AAA97501B99128E001E493F /* BridgeListController.swift */; };
 		2AAA97531B99354E001E493F /* BridgePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AAA97521B99354E001E493F /* BridgePreview.swift */; };
 		2AAA97551B9A3C15001E493F /* BridgeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AAA97541B9A3C15001E493F /* BridgeDetailViewController.swift */; };
 		2AAA97571B9E3747001E493F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AAA97561B9E3747001E493F /* CoreData.framework */; };
 		2AAA97591B9E5283001E493F /* MagicalRecord.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AAA97581B9E5283001E493F /* MagicalRecord.framework */; };
 		2AAA975C1B9E5679001E493F /* Models.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2AAA975A1B9E5679001E493F /* Models.xcdatamodeld */; };
+		4A215B611BA3F3B100DC8BFA /* BridgeListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A215B601BA3F3B100DC8BFA /* BridgeListViewController.swift */; };
+		4A215B631BA3F3D400DC8BFA /* GeofenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A215B621BA3F3D400DC8BFA /* GeofenceController.swift */; };
 		DF6D89EB1B90D12000D9CC01 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DF6D89EA1B90D12000D9CC01 /* Settings.bundle */; };
 		DF6D89EE1B90D2D600D9CC01 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF6D89EC1B90D2D600D9CC01 /* Mapbox.framework */; };
 		DF6D89EF1B90D2D600D9CC01 /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF6D89ED1B90D2D600D9CC01 /* SwiftyJSON.framework */; };
@@ -44,7 +45,6 @@
 		2A8366201BA0D19D00C1D2DB /* _Geofence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _Geofence.swift; sourceTree = "<group>"; };
 		2A8366211BA0D19D00C1D2DB /* Bridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bridge.swift; sourceTree = "<group>"; };
 		2A8366221BA0D19D00C1D2DB /* Geofence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geofence.swift; sourceTree = "<group>"; };
-		2AAA97501B99128E001E493F /* BridgeListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BridgeListController.swift; sourceTree = "<group>"; };
 		2AAA97521B99354E001E493F /* BridgePreview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BridgePreview.swift; path = "waittimes-ios/BridgePreview.swift"; sourceTree = SOURCE_ROOT; };
 		2AAA97541B9A3C15001E493F /* BridgeDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BridgeDetailViewController.swift; sourceTree = "<group>"; };
 		2AAA97561B9E3747001E493F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -52,6 +52,8 @@
 		2AAA975B1B9E5679001E493F /* Models.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Models.xcdatamodel; sourceTree = "<group>"; };
 		2AAA97601B9E5F7E001E493F /* waittimes-ios-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "waittimes-ios-Bridging-Header.h"; sourceTree = "<group>"; };
 		3D607E0106009BB43A7098CB /* Pods_waittimes_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_waittimes_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A215B601BA3F3B100DC8BFA /* BridgeListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BridgeListViewController.swift; sourceTree = "<group>"; };
+		4A215B621BA3F3D400DC8BFA /* GeofenceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeofenceController.swift; sourceTree = "<group>"; };
 		900CF0A903634DB900108DA8 /* Pods-waittimes-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-waittimes-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-waittimes-ios/Pods-waittimes-ios.debug.xcconfig"; sourceTree = "<group>"; };
 		DF6D89EA1B90D12000D9CC01 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = ../Settings.bundle; sourceTree = "<group>"; };
 		DF6D89EC1B90D2D600D9CC01 /* Mapbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mapbox.framework; path = "Pods/../build/Debug-iphoneos/Mapbox.framework"; sourceTree = "<group>"; };
@@ -101,6 +103,23 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		4A215B5E1BA3F33600DC8BFA /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				4A215B621BA3F3D400DC8BFA /* GeofenceController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		4A215B5F1BA3F33E00DC8BFA /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				4A215B601BA3F3B100DC8BFA /* BridgeListViewController.swift */,
+				2AAA97541B9A3C15001E493F /* BridgeDetailViewController.swift */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
 		82A77594D24A6745E07375AA /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -145,12 +164,12 @@
 		DFDD346C1B8FF2CA00FDB5A2 /* waittimes-ios */ = {
 			isa = PBXGroup;
 			children = (
+				4A215B5F1BA3F33E00DC8BFA /* View Controllers */,
+				4A215B5E1BA3F33600DC8BFA /* Controllers */,
 				2A83661E1BA0D19D00C1D2DB /* Models */,
 				DF6D89EA1B90D12000D9CC01 /* Settings.bundle */,
 				DFDD346F1B8FF2CA00FDB5A2 /* AppDelegate.swift */,
-				2AAA97501B99128E001E493F /* BridgeListController.swift */,
 				2AAA97521B99354E001E493F /* BridgePreview.swift */,
-				2AAA97541B9A3C15001E493F /* BridgeDetailViewController.swift */,
 				2AAA975A1B9E5679001E493F /* Models.xcdatamodeld */,
 				DFDD34731B8FF2CB00FDB5A2 /* Main.storyboard */,
 				DFDD34761B8FF2CB00FDB5A2 /* Images.xcassets */,
@@ -364,12 +383,13 @@
 				2A8366261BA0D19D00C1D2DB /* Geofence.swift in Sources */,
 				2A8366241BA0D19D00C1D2DB /* _Geofence.swift in Sources */,
 				2AAA97531B99354E001E493F /* BridgePreview.swift in Sources */,
-				2AAA97511B99128E001E493F /* BridgeListController.swift in Sources */,
 				2AAA975C1B9E5679001E493F /* Models.xcdatamodeld in Sources */,
 				2A8366251BA0D19D00C1D2DB /* Bridge.swift in Sources */,
 				2AAA97551B9A3C15001E493F /* BridgeDetailViewController.swift in Sources */,
 				2A8366231BA0D19D00C1D2DB /* _Bridge.swift in Sources */,
+				4A215B631BA3F3D400DC8BFA /* GeofenceController.swift in Sources */,
 				DFDD34701B8FF2CA00FDB5A2 /* AppDelegate.swift in Sources */,
+				4A215B611BA3F3B100DC8BFA /* BridgeListViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
