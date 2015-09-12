@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 $:.unshift('/Library/RubyMotion/lib')
 require 'motion/project/template/ios'
-require 'active_resource'
 require 'bubble-wrap'
 require 'bubble-wrap/ui'
 require 'bubble-wrap/core'

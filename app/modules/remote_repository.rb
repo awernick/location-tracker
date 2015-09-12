@@ -9,24 +9,24 @@ module RemoteRepository
 
   module ClassMethods
     attr_accessor :resource_name
-    attr_accessor :path 
-
+    
     attr_writer :primary_key
     attr_writer :client
     attr_writer :site
-
+    attr_writer :path 
+    
     def config
       yield self if block_given?
     end
 
     def all(&block)
       client.get("#{site}/#{path}") do |result|
-        if result.error
-          payload = []
-        else
+        if result.success?
           payload = result.object.map do |attrs| 
             resource_name.constantize.new(normalize_result(attrs))
           end
+        else
+          payload = []
         end
 
         block.call(payload) if block
@@ -34,12 +34,12 @@ module RemoteRepository
     end
 
     def get(resource, &block)
-      client.get("#{site}/#{path}/#{resource.id}") do |result|
-        if result.error
-          payload = nil
-        else
+      client.get(resource_url(resource)) do |result|
+        if result.success?
           attrs = normalize_result(result.object)
-          payload = resource_name.constantize.new(attrs) 
+          payload = resource_name.constantize.new(attrs)
+        else
+          payload = nil
         end
 
         block.call(payload) if block
@@ -72,10 +72,10 @@ module RemoteRepository
 
     def delete(resource, &block)
       client.delete("#{site}/#{path}/#{resource.id}") do |result|
-        if result.error
-          block.call(false) if block
-        else
+        if result.success?
           block.call(true) if block
+        else
+          block.call(false) if block
         end
       end
     end
@@ -91,12 +91,35 @@ module RemoteRepository
       raise ClientError, 'Missing valid client' unless defined? @client
       @client
     end
+    
+    def path
+      @path
+    end
+
+    def include_format_in_path=(option = false)
+      @include_format = option
+    end
+
+    def include_format?
+      !!@include_format
+    end
+
+    def resource_url(resource = nil)
+      url = "#{site}/#{path}"
+      url += "/#{resource.id}" unless resource.nil?
+      url += ".json" if include_format?
+    end
 
     def primary_key
       @primary_key || '_id'
     end
 
-  private
+    def normalize_result(params)
+      params['id'] = params[primary_key]
+      params.select! {|k,v| resource_name.constantize.method_defined?(k) && !v.nil?}
+    end
+
+ private
     def process_result(result, resource_params, &block)
       if result.failure?
         $logger << result.error
@@ -106,11 +129,6 @@ module RemoteRepository
 
       resource = resource_name.constantize.new(resource_params)
       block.call(resource) if block
-    end
-
-    def normalize_result(params)
-      params['id'] = params[primary_key]
-      params.select! {|k,v| resource_name.constantize.method_defined?(k) && !v.nil?}
     end
   end
 end
